@@ -59,10 +59,13 @@ function App() {
 
   const placeBet = async (side, e) => {
     e.preventDefault();
-    await predictionMarket.placeBet(
-      side, 
-      {value: e.target.elements[0].value}
-    );
+    try{
+      await predictionMarket.placeBet(
+        side, 
+        {value: e.target.elements[0].value}
+      );
+    }
+    catch (err){// if people reject, do something, add error box in the future?}
   };
 
   const withdrawGain = async () => {
