@@ -38,8 +38,8 @@ function App() {
       	}]
       };
       const myBets = await Promise.all([
-        predictionMarket.betsPerGambler(signerAddress, SIDE.TRUMP),
         predictionMarket.betsPerGambler(signerAddress, SIDE.BIDEN),
+        predictionMarket.betsPerGambler(signerAddress, SIDE.TRUMP),
       ]);
       setMyBets(myBets);
       //console.log(myBets[0].toString());
@@ -113,7 +113,7 @@ function App() {
             <img src='./img/biden.png' />
             <div className="card-body">
               <h5 className="card-title">Biden</h5>
-              <form className="form-inline">
+              <form className="form-inline" onSubmit={e => placeBet(SIDE.BIDEN, e)}>
                 <input 
                   type="text" 
                   className="form-control mb-2 mr-sm-2" 
