@@ -65,7 +65,8 @@ function App() {
         {value: e.target.elements[0].value}
       );
     }
-    catch (err){// if people reject, do something, add error box in the future?}
+    catch (err){// if people reject, do something, add error box in the future?
+    }
   };
 
   const withdrawGain = async () => {
