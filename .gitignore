@@ -1,1 +1,3 @@
 node_modules
+frontend/src/contracts/Migrations.json
+frontend/src/contracts/PredictionMarket.json
