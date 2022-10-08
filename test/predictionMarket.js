@@ -7,6 +7,15 @@ contract('PredictionMarket', addresses => {
     // const predictionMarket = await PredictionMarket.new(oracle);
     const predictionMarket = await PredictionMarket.new();
 
+    const balancesBefore = (await Promise.all( 
+      [gambler1, gambler2, gambler3, gambler4].map(gambler => (
+        web3.eth.getBalance(gambler)
+      ))
+    ))
+    .map(balance => (balance));
+
+    console.log(balancesBefore);
+
     // createBet(string memory topicID, string memory topic, string[] memory sides, 
     // uint64 deadline, uint64 schedule, uint256 commission, uint256 minimum, uint256 initialPool, string memory description)
     await predictionMarket.createTopic(
@@ -22,13 +31,50 @@ contract('PredictionMarket', addresses => {
       {from: gambler1, value: web3.utils.toWei('10')}
     );
 
+    const balances1 = (await Promise.all( 
+      [gambler1, gambler2, gambler3, gambler4].map(gambler => (
+        web3.eth.getBalance(gambler)
+      ))
+    ))
+    .map(balance => (balance));
+
+    console.log(balances1);
+
     // string memory topicID, string memory side, uint256 bet
     await predictionMarket.placeBet(
       "6bba15ab-8667-47e2-98b4-643191bfc6a3", 
       "biden", 
       3,
-      {from: gambler1, value: web3.utils.toWei('3')}
+      {from: gambler1, value: '3'}
     );
+
+    const balances2 = (await Promise.all( 
+      [gambler1, gambler2, gambler3, gambler4].map(gambler => (
+        web3.eth.getBalance(gambler)
+      ))
+    ))
+    .map(balance => (balance));
+
+    console.log(balances2);
+
+    await predictionMarket.placeBet(
+      "6bba15ab-8667-47e2-98b4-643191bfc6a3", 
+      "trump", 
+      5,
+      {from: gambler2, value: '5'}
+    );
+
+    const balances3 = (await Promise.all( 
+      [gambler1, gambler2, gambler3, gambler4].map(gambler => (
+        web3.eth.getBalance(gambler)
+      ))
+    ))
+    .map(balance => (balance));
+
+    console.log(balances3);
+
+ 
+    
   /*  
     await predictionMarket.placeBet(
       Side.Biden, 
