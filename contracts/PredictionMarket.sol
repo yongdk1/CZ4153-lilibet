@@ -13,13 +13,13 @@ contract PredictionMarket is usingProvable{
 // There are two different dates associated with each created bet:
 
 // deadline when a user can no longer place new bets
-mapping(string => uint64) public betDeadlines;
+mapping(string => uint64) public topicDeadlines;
 // deadline for oracle to submit the bet's final result
-mapping(string => uint64) public betSchedules;
+mapping(string => uint64) public topicSchedules;
 
 
-// There's a 0.0001 ETH fixed commission transferred to the contract's creator for every placed bet
-uint256 constant fixedCommission = 1e14;
+// There's a 1 wei fixed commission transferred to the contract's creator for every placed bet
+uint256 constant fixedCommission = 1;
 
 // Minimum entry for all bets, bet owners cannot set it lower than this 
 uint256 constant minimumBet = fixedCommission * 2;
@@ -27,24 +27,24 @@ uint256 constant minimumBet = fixedCommission * 2;
 // Custom minimum entry for each bet, set by their owner
 mapping(string => uint256) public betMinimums;
 
-// Keep track of all createdBets to prevent duplicates
-mapping(string => bool) public createdBets;
+// Keep track of all createdTopics to prevent duplicates
+mapping(string => bool) public createdTopics;
 
-// Once a query is executed by the oracle, associate its ID with the bet's ID to handle updating the bet's state in __callback
-mapping(string => string) public queryBets;
+// Once a query is executed by the oracle, associate its ID with the topic's ID to handle updating the topic's state in __callback
+mapping(string => string) public queryTopics;
 
 
 // Keep track of all owners to handle commission fees
-mapping(string => address payable) public betOwners; 
-mapping(string => uint256) public betCommissions;
+mapping(string => address payable) public topicOwners; 
+mapping(string => uint256) public topicCommissions;
 
 
 // For each bet, how much each has each user put into that bet's pool?
 mapping(string => mapping(address => uint256)) public userPools;
 
 
-// What is the total pooled per bet?
-mapping(string => uint256) public betPools;
+// What is the total pooled per topic?
+mapping(string => uint256) public topicPools;
 
 
 // query price for oracle to submit bet results
@@ -69,16 +69,14 @@ event CreatedBet(string indexed _id, uint256 initialPool, string description, st
 function createBet(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, uint64 schedule, uint256 commission, uint256 minimum, uint256 initialPool, string memory description) public payable {
 
   require(
-    bytes(topicID).length > 0, 
-/*
+    bytes(topicID).length > 0
       && deadline > block.timestamp // Bet can't be set in the past
       && deadline <= schedule // Users should only be able to place bets before it is actually executed
-      && schedule < block.timestamp + scheduleThreshold
+      // && schedule < block.timestamp + scheduleThreshold
       && msg.value >= initialPool
       && commission > 1 // Commission can't be higher than 50%
       && minimum >= minimumBet
-      && !createdBets[topicID], // Can't have duplicate bets
-*/
+      && !createdTopics[topicID], // Can't have duplicate topics
 
   "Unable to create bet, check arguments.");
 
@@ -96,20 +94,20 @@ function createBet(string memory topicID, string memory topic, string[] memory s
   }
 
   // Bet creation should succeed from this point onward 
-  createdBets[topicID] = true;
+  createdTopics[topicID] = true;
 
   /* Even though the oracle query is scheduled to run in the future, 
   it immediately returns a query ID which we associate with the newly created bet. */
 
   //bytes32 queryId = provable_query(schedule, "URL", query);
   string memory queryId = topicID;
-  queryBets[queryId] = topicID;
+  queryTopics[queryId] = topicID;
 
   // update state
-  betOwners[topicID] = msg.sender;
-  betCommissions[topicID] = commission;
-  betDeadlines[topicID] = deadline;
-  betSchedules[topicID] = schedule;
+  topicOwners[topicID] = msg.sender;
+  topicCommissions[topicID] = commission;
+  topicDeadlines[topicID] = deadline;
+  topicSchedules[topicID] = schedule;
   betMinimums[topicID] = minimum;
 
 
@@ -117,7 +115,7 @@ function createBet(string memory topicID, string memory topic, string[] memory s
   but not associating it with any results, we allow the creator to incentivize 
   people to participate without needing to place a bet themselves. */
   userPools[topicID][msg.sender] += initialPool;
-  betPools[topicID] = initialPool;
+  topicPools[topicID] = initialPool;
 
   // initialize the sides, set pool for each side to 0
   for (uint i = 0; i < sides.length; i++) {
@@ -145,9 +143,9 @@ function placeBet(string memory topicID, string memory side, uint256 bet) public
     require(
         // results.length > 0 
         // && results.length == amounts.length 
-        createdBets[topicID] 
+        createdTopics[topicID] 
         && !finishedBets[topicID] 
-        && betDeadlines[topicID] >= block.timestamp,
+        && topicDeadlines[topicID] >= block.timestamp,
     "Unable to place bets, check arguments.");
 
     uint256 total = msg.value;
@@ -163,7 +161,7 @@ function placeBet(string memory topicID, string memory side, uint256 bet) public
     // Update all required state
     resultPools[topicID][side] += bet;
     userPools[topicID][msg.sender] += bet;
-    betPools[topicID] += bet;
+    topicPools[topicID] += bet;
     userBets[topicID][msg.sender][side] += bet;
 
     // Fixed commission transfer
@@ -213,7 +211,7 @@ uint64 constant betThreshold = 5 * 24 * 60 * 60;
 
 function claimBet(string memory topicID) public {
 
-    bool betExpired = betSchedules[topicID] + betThreshold < block.timestamp;
+    bool betExpired = topicSchedules[topicID] + betThreshold < block.timestamp;
 
     
 
@@ -269,7 +267,7 @@ function claimBet(string memory topicID) public {
 
         // User won the bet and receives their corresponding share of the loser's pool
 
-        uint256 loserPool = betPools[topicID] - winnerPool;
+        uint256 loserPool = topicPools[topicID] - winnerPool;
 
         emit WonBet(msg.sender, reward);
 
@@ -291,7 +289,7 @@ function claimBet(string memory topicID) public {
 
     // Bet owner gets their commission
 
-    uint256 ownerFee = reward / betCommissions[topicID];
+    uint256 ownerFee = reward / topicCommissions[topicID];
 
     reward -= ownerFee;
 
@@ -299,7 +297,7 @@ function claimBet(string memory topicID) public {
 
     require(success, "Failed to transfer reward to user.");
 
-    (success, ) = betOwners[topicID].call.value(ownerFee)("");
+    (success, ) = topicOwners[topicID].call.value(ownerFee)("");
 
     require(success, "Failed to transfer commission to bet owner.");
 
@@ -319,7 +317,7 @@ mapping(string => string) public betResults;
 /*
 function __callback(string memory queryId, string memory result) override public {
 
-    string memory topicID = queryBets[queryId];
+    string memory topicID = queryTopics[queryId];
 
 
     require(msg.sender == provable_cbAddress() && !finishedBets[topicID]);

@@ -15,7 +15,7 @@ contract('PredictionMarket', addresses => {
       ['biden','trump'],
       1765217612, 
       1765217612,
-      1, 
+      10, 
       2, 
       5, 
       "description",
@@ -33,18 +33,6 @@ contract('PredictionMarket', addresses => {
     await predictionMarket.placeBet(
       Side.Biden, 
       {from: gambler1, value: web3.utils.toWei('1')}
-    );
-    await predictionMarket.placeBet(
-      Side.Biden, 
-      {from: gambler2, value: web3.utils.toWei('1')}
-    );
-    await predictionMarket.placeBet(
-      Side.Biden, 
-      {from: gambler3, value: web3.utils.toWei('2')}
-    );
-    await predictionMarket.placeBet(
-      Side.Trump, 
-      {from: gambler4, value: web3.utils.toWei('4')}
     );
 
     await predictionMarket.reportResult(
