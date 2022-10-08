@@ -9,7 +9,7 @@ contract('PredictionMarket', addresses => {
 
     // createBet(string memory topicID, string memory topic, string[] memory sides, 
     // uint64 deadline, uint64 schedule, uint256 commission, uint256 minimum, uint256 initialPool, string memory description)
-    await predictionMarket.createBet(
+    await predictionMarket.createTopic(
       "6bba15ab-8667-47e2-98b4-643191bfc6a3", 
       "US Election", 
       ['biden','trump'],

@@ -3,6 +3,10 @@ pragma experimental ABIEncoderV2;
 
 import "./provableAPI.sol";
 
+// TO DO
+// 1. add trusted arbitrator to createTopic
+// 2. update timestamp check for schedule in createTopic
+
 contract PredictionMarket is usingProvable{
 
   address payable contractCreator;
@@ -10,21 +14,21 @@ contract PredictionMarket is usingProvable{
       contractCreator = msg.sender;
 }
 
-// There are two different dates associated with each created bet:
+// There are two different dates associated with each created topic:
 
-// deadline when a user can no longer place new bets
+// 1. deadline when a user can no longer place new bets
 mapping(string => uint64) public topicDeadlines;
-// deadline for oracle to submit the bet's final result
+// 2. deadline for oracle to submit the bet's final result
 mapping(string => uint64) public topicSchedules;
 
 
 // There's a 1 wei fixed commission transferred to the contract's creator for every placed bet
 uint256 constant fixedCommission = 1;
 
-// Minimum entry for all bets, bet owners cannot set it lower than this 
+// Minimum entry for all bets, topic owners cannot set it lower than this 
 uint256 constant minimumBet = fixedCommission * 2;
 
-// Custom minimum entry for each bet, set by their owner
+// Custom minimum entry for each topic, set by their owner
 mapping(string => uint256) public betMinimums;
 
 // Keep track of all createdTopics to prevent duplicates
@@ -39,11 +43,11 @@ mapping(string => address payable) public topicOwners;
 mapping(string => uint256) public topicCommissions;
 
 
-// For each bet, how much each has each user put into that bet's pool?
+// For each topic, how much each has each user put into that topic's pool
 mapping(string => mapping(address => uint256)) public userPools;
 
 
-// What is the total pooled per topic?
+// Total pooled per topic
 mapping(string => uint256) public topicPools;
 
 
@@ -54,6 +58,8 @@ uint256 public oraclePrice;
 // Queries can't be scheduled more than 60 days in the future
 uint64 constant scheduleThreshold = 60 * 24 * 60 * 60;
 
+// For each topic, how much is the total pooled per side
+mapping(string => mapping(string => uint256)) public resultPools;
 
 
 /* Provable's API requires some initial funds to cover the cost of the query. 
@@ -66,11 +72,11 @@ but which can prove useful to people taking a look at the bet in the frontend. *
 event CreatedBet(string indexed _id, uint256 initialPool, string description, string query);
 
 
-function createBet(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, uint64 schedule, uint256 commission, uint256 minimum, uint256 initialPool, string memory description) public payable {
+function createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, uint64 schedule, uint256 commission, uint256 minimum, uint256 initialPool, string memory description) public payable {
 
   require(
     bytes(topicID).length > 0
-      && deadline > block.timestamp // Bet can't be set in the past
+      && deadline > block.timestamp // topic can't be set in the past
       && deadline <= schedule // Users should only be able to place bets before it is actually executed
       // && schedule < block.timestamp + scheduleThreshold
       && msg.value >= initialPool
@@ -78,7 +84,7 @@ function createBet(string memory topicID, string memory topic, string[] memory s
       && minimum >= minimumBet
       && !createdTopics[topicID], // Can't have duplicate topics
 
-  "Unable to create bet, check arguments.");
+  "Unable to create topic, check arguments.");
 
   // The remaining balance should be enough to cover the cost of the smart oracle query
   uint256 balance = msg.value - initialPool;
@@ -93,11 +99,10 @@ function createBet(string memory topicID, string memory topic, string[] memory s
       return;
   }
 
-  // Bet creation should succeed from this point onward 
+  // Topic creation should succeed from this point onward 
   createdTopics[topicID] = true;
 
-  /* Even though the oracle query is scheduled to run in the future, 
-  it immediately returns a query ID which we associate with the newly created bet. */
+  // set oracle queryId as topicID
 
   //bytes32 queryId = provable_query(schedule, "URL", query);
   string memory queryId = topicID;
@@ -111,7 +116,7 @@ function createBet(string memory topicID, string memory topic, string[] memory s
   betMinimums[topicID] = minimum;
 
 
-  /* By adding the initial pool to the bet creator's, 
+  /* By adding the initial pool to the topic creator's, 
   but not associating it with any results, we allow the creator to incentivize 
   people to participate without needing to place a bet themselves. */
   userPools[topicID][msg.sender] += initialPool;
@@ -126,14 +131,11 @@ function createBet(string memory topicID, string memory topic, string[] memory s
 }
 
 
-// The table in the frontend representing each bet's pool is populated according to these events.
+// The table in the frontend representing each topic's pool is populated according to these events.
 event PlacedBets(address indexed user, string indexed _id, string id, string side);
 
-// For each bet, how much is the total pooled per result?
-mapping(string => mapping(string => uint256)) public resultPools;
-
   
-// For each bet, track how much each user has put into each result
+// For each bet, track how much each user has put into each side
 mapping(string => mapping(address => mapping(string => uint256))) public userBets;
   
 
