@@ -4,8 +4,8 @@ contract('PredictionMarket', addresses => {
   const [admin, oracle, gambler1, gambler2, gambler3, gambler4, _] = addresses;
 
   it('should work', async () => {
-    // const predictionMarket = await PredictionMarket.new(oracle);
-    const predictionMarket = await PredictionMarket.new();
+    const predictionMarket = await PredictionMarket.new(oracle, {from: admin});
+    // const predictionMarket = await PredictionMarket.new();
 
     const balancesBefore = (await Promise.all( 
       [gambler1, gambler2, gambler3, gambler4].map(gambler => (
