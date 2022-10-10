@@ -17,10 +17,10 @@ contract PredictionMarket{
     }
 
     // Prediction Market Contract Creator reward
-    // There's a 1 wei fixed commission transferred to the contract's creator for every placed bet
-    uint256 constant fixedCommission = 1;
+    // There's a 10 wei fixed commission transferred to the contract's creator for every placed bet
+    uint256 constant fixedCommission = 100;
     // Minimum entry for all bets, topic owners cannot set it lower than this 
-    uint256 constant minimumBet = fixedCommission * 2;
+    uint256 constant minimumBet = fixedCommission + 1;
 
     // topic mappings: 
     // Keep track of all createdTopics to prevent duplicates
@@ -29,11 +29,14 @@ contract PredictionMarket{
     // There are two different dates associated with each created topic:
     // 1. deadline when a user can no longer place new bets
     mapping(string => uint64) public topicDeadlines;
-    // 2. deadline for oracle to submit the bet's final result
+    // 2. deadline for oracle to submit the bet's final result - fixed at 30 days after topicDeadline
+    uint64 constant scheduleThreshold = 30 * 24 * 60 * 60; 
     mapping(string => uint64) public topicSchedules;
+
 
     // Keep track of all owners to handle commission fees
     mapping(string => address payable) public topicOwners; 
+    mapping(string => address) public topicArbitrator; 
 
     // commision related:
     mapping(string => uint256) public topicCommissions;
@@ -50,29 +53,22 @@ contract PredictionMarket{
     // query price for oracle to submit bet results
     uint256 public oraclePrice;
 
-    /*
-    // Queries can't be scheduled more than 60 days in the future
-    uint64 constant scheduleThreshold = 60 * 24 * 60 * 60;
-    */
-
-    /* Require some initial funds to cover the cost of the oracle.
-    If they are not enough to pay for it, the user should be informed and their funds returned. */
+    // Not enough to pay for it, the user should be informed and their funds returned
     event LackingFunds(address indexed sender, uint256 funds);
 
     /* Contains all the information that does not need to be saved as a state variable, 
     but which can prove useful to people taking a look at the bet in the frontend. */
     event CreatedBet(string indexed _id, string description, string query);
 
-    function createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, uint64 schedule, uint256 minimum, uint256 commission, string memory description) public payable {
+    function createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, uint256 minimum, uint256 commission, string memory description, address _arbitrator) public {
 
         require(
             bytes(topicID).length > 0
             && sides.length > 1
             && deadline > block.timestamp // topic can't be set in the past
-            && deadline <= schedule // Users should only be able to place bets before it is actually executed
+            // && deadline <= schedule // Users should only be able to place bets before it is actually executed
             // && schedule < block.timestamp + scheduleThreshold
-            // && msg.value >= initialPool
-            && commission >= 5 // %Commission is 1 / commission (i.e. 20% is 1/5, commision == 5)
+            && commission <= 20 // maximum comission is 20%
             && minimum >= minimumBet
             && !createdTopics[topicID], // Can't have duplicate topics
             "Unable to create topic, check arguments."
@@ -95,15 +91,10 @@ contract PredictionMarket{
         createdTopics[topicID] = true;
         topicOwners[topicID] = payable(msg.sender);
         topicDeadlines[topicID] = deadline;
-        topicSchedules[topicID] = schedule;
+        topicSchedules[topicID] = deadline + scheduleThreshold;
         topicMinimum[topicID] = minimum;
-        topicCommissions[topicID] = commission;
-
-        // /* By adding the initial pool to the topic creator's, 
-        // but not associating it with any results, we allow the creator to incentivize 
-        // people to participate without needing to place a bet themselves. */
-        // userPools[topicID][msg.sender] += initialPool;
-        // topicPools[topicID] = initialPool;
+        topicCommissions[topicID] = 100/commission;
+        topicArbitrator[topicID]= _arbitrator;
 
         // initialize the sides, set pool for each side to 0
         for (uint i = 0; i < sides.length; i++) {
@@ -158,7 +149,7 @@ contract PredictionMarket{
 
     // Function executed by oracle when the topic is scheduled to close
     function reportResult(string memory topicID, string memory result) public {
-        require(msg.sender == oracle && !finishedTopics[topicID], 'only oracle can report the result');
+        require(msg.sender == topicArbitrator[topicID] && !finishedTopics[topicID], 'only oracle can report the result');
         
         topicResults[topicID] = result;
         finishedTopics[topicID] = true;

@@ -8,34 +8,36 @@ contract('PredictionMarket', addresses => {
     // const predictionMarket = await PredictionMarket.new();
 
     const balancesBefore = (await Promise.all( 
-      [admin, gambler1, gambler2, gambler3, gambler4].map(gambler => (
+      [admin, oracle, gambler1, gambler2, gambler3, gambler4].map(gambler => (
         web3.eth.getBalance(gambler)
       ))
     ))
     .map(balance => (balance));
 
+    console.log('balances before');
     console.log(balancesBefore);
 
-    // createBet(string memory topicID, string memory topic, string[] memory sides, 
-    // uint64 deadline, uint64 schedule, uint256 minimum, uint256 initialPool, string memory description)
+    // createTopic(string memory topicID, string memory topic, string[] memory sides, 
+    // uint64 deadline, uint256 minimum, uint256 commission, string memory description, address _arbitrator)
     await predictionMarket.createTopic(
       "6bba15ab-8667-47e2-98b4-643191bfc6a3", 
       "US Election", 
       ['biden','trump'],
       1765217612, 
-      1765217612, 
-      2, 
+      101, 
       10,
       "description",
+      oracle,
       {from: gambler1}
     );
 
     const balances1 = (await Promise.all( 
-      [admin, gambler1, gambler2, gambler3, gambler4].map(gambler => (
+      [admin, oracle, gambler1, gambler2, gambler3, gambler4].map(gambler => (
         web3.eth.getBalance(gambler)
       ))
     ))
     .map(balance => (balance));
+    console.log('gambler 1 created topic')
     console.log(balances1);
 
     // string memory topicID, string memory side, uint256 bet
@@ -46,11 +48,12 @@ contract('PredictionMarket', addresses => {
     );
 
     const balances2 = (await Promise.all( 
-      [admin, gambler1, gambler2, gambler3, gambler4].map(gambler => (
+      [admin, oracle, gambler1, gambler2, gambler3, gambler4].map(gambler => (
         web3.eth.getBalance(gambler)
       ))
     ))
     .map(balance => (balance));
+    console.log('gambler 2 placed bet')
     console.log(balances2);
 
     await predictionMarket.placeBet(
@@ -60,11 +63,12 @@ contract('PredictionMarket', addresses => {
     );
 
     const balances3 = (await Promise.all( 
-      [admin, gambler1, gambler2, gambler3, gambler4].map(gambler => (
+      [admin, oracle, gambler1, gambler2, gambler3, gambler4].map(gambler => (
         web3.eth.getBalance(gambler)
       ))
     ))
     .map(balance => (balance));
+    console.log('gambler 3 placed bet')
     console.log(balances3);
     
     await predictionMarket.reportResult(
@@ -87,11 +91,12 @@ contract('PredictionMarket', addresses => {
     // .then(result => console.log(result.logs[1].args))
 
     const balances4 = (await Promise.all( 
-      [admin, gambler1, gambler2, gambler3, gambler4].map(gambler => (
+      [admin, oracle, gambler1, gambler2, gambler3, gambler4].map(gambler => (
         web3.eth.getBalance(gambler)
       ))
     ))
     .map(balance => (balance));
+    console.log('final balances');
     console.log(balances4);
   });
 });
