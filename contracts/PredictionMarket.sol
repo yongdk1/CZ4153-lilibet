@@ -1,4 +1,5 @@
-pragma solidity > 0.6.1 < 0.7.0;
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.17;
 pragma experimental ABIEncoderV2;
 
 // TO DO
@@ -10,8 +11,8 @@ contract PredictionMarket{
     address payable contractCreator;
     address public oracle;
 
-    constructor(address _oracle) public payable {
-        contractCreator = msg.sender;
+    constructor(address _oracle) payable {
+        contractCreator = payable(msg.sender);
         oracle = _oracle;
     }
 
@@ -91,7 +92,7 @@ contract PredictionMarket{
 
         // Create topic
         createdTopics[topicID] = true;
-        topicOwners[topicID] = msg.sender;
+        topicOwners[topicID] = payable(msg.sender);
         topicDeadlines[topicID] = deadline;
         topicSchedules[topicID] = schedule;
         topicMinimum[topicID] = minimum;
@@ -220,7 +221,7 @@ contract PredictionMarket{
         // Bet owner gets their commission
         // uint256 ownerFee = reward - topicCommissions[topicID];
         // reward -= ownerFee;
-        (bool success, ) = msg.sender.call.value(reward)("");
+        (bool success, ) = msg.sender.call{value:reward}("");
         require(success, "Failed to transfer reward to user.");
         // (success, ) = topicOwners[topicID].call.value(ownerFee)("");
         // require(success, "Failed to transfer commission to bet owner.");
