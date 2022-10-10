@@ -2,10 +2,6 @@
 pragma solidity 0.8.17;
 pragma experimental ABIEncoderV2;
 
-// TO DO
-// 1. add trusted arbitrator to createTopic
-// 2. update timestamp check for schedule in createTopic
-
 contract PredictionMarket{
 
     address payable contractCreator;
