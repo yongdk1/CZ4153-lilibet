@@ -12,7 +12,7 @@ contract PredictionMarket{
 
     constructor(address _oracle) public payable {
         contractCreator = msg.sender;
-        // oracle = _oracle;
+        oracle = _oracle;
     }
 
     // topic mappings: 
@@ -27,26 +27,23 @@ contract PredictionMarket{
 
     // Keep track of all owners to handle commission fees
     mapping(string => address payable) public topicOwners; 
-    mapping(string => uint256) public topicCommissions;
 
     // Custom minimum entry for each topic, set by their owner
     mapping(string => uint256) public topicMinimum;
 
     // Total pooled per topic
     mapping(string => uint256) public topicPools;
-
     // For each topic, how much is the total pooled per side; resultPools[topicID][side]
     mapping(string => mapping(string => uint256)) public resultPools;
-
     // For each topic, how much each has each user put into that topic's pool; userPools[topicID][msg.sender]
     mapping(string => mapping(address => uint256)) public userPools;
 
-    // commision related:
-    // There's a 1 wei fixed commission transferred to the contract's creator for every placed bet
-    uint256 constant fixedCommission = 1;
-    // Minimum entry for all bets, topic owners cannot set it lower than this 
-    uint256 constant minimumBet = fixedCommission * 2;
-
+    // // commision related:
+    // mapping(string => uint256) public topicCommissions;
+    // // There's a 1 wei fixed commission transferred to the contract's creator for every placed bet
+    // uint256 constant fixedCommission = 1;
+    // // Minimum entry for all bets, topic owners cannot set it lower than this 
+    uint256 constant minimumBet = 2;
     
     // query price for oracle to submit bet results
     uint256 public oraclePrice;
@@ -56,63 +53,62 @@ contract PredictionMarket{
     uint64 constant scheduleThreshold = 60 * 24 * 60 * 60;
     */
 
-    /* Provable's API requires some initial funds to cover the cost of the query. 
+    /* Require some initial funds to cover the cost of the oracle.
     If they are not enough to pay for it, the user should be informed and their funds returned. */
     event LackingFunds(address indexed sender, uint256 funds);
 
     /* Contains all the information that does not need to be saved as a state variable, 
     but which can prove useful to people taking a look at the bet in the frontend. */
-    event CreatedBet(string indexed _id, uint256 initialPool, string description, string query);
+    event CreatedBet(string indexed _id, string description, string query);
 
-    function createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, uint64 schedule, uint256 commission, uint256 minimum, uint256 initialPool, string memory description) public payable {
+    function createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, uint64 schedule, uint256 minimum, string memory description) public payable {
 
         require(
             bytes(topicID).length > 0
+            && sides.length > 1
             && deadline > block.timestamp // topic can't be set in the past
             && deadline <= schedule // Users should only be able to place bets before it is actually executed
             // && schedule < block.timestamp + scheduleThreshold
-            && msg.value >= initialPool
-            && commission > 1 // Commission can't be higher than 50%
+            // && msg.value >= initialPool
+            // && commission > 1 // Commission can't be higher than 50%
             && minimum >= minimumBet
             && !createdTopics[topicID], // Can't have duplicate topics
             "Unable to create topic, check arguments."
         );
 
-        // The remaining balance should be enough to cover the cost of the smart oracle query
-        uint256 balance = msg.value - initialPool;
+        // // The remaining balance should be enough to cover the cost of the smart oracle query
+        // uint256 balance = msg.value;
 
-        // oraclePrice = provable_getPrice("URL");
-        oraclePrice = 0;
+        // // oraclePrice = provable_getPrice("URL");
+        // oraclePrice = 0;
 
-        if (oraclePrice > balance) {
-            emit LackingFunds(msg.sender, oraclePrice);
-            (bool success, ) = msg.sender.call.value(msg.value)("");
-            require(success, "Error when returning funds to bet owner.");
-            return;
-        }
+        // if (oraclePrice > balance) {
+        //     emit LackingFunds(msg.sender, oraclePrice);
+        //     (bool success, ) = msg.sender.call.value(msg.value)("");
+        //     require(success, "Error when returning funds to bet owner.");
+        //     return;
+        // }
 
-        // Topic creation should succeed from this point onward 
+        // Create topic
         createdTopics[topicID] = true;
-
-        // update state
         topicOwners[topicID] = msg.sender;
-        topicCommissions[topicID] = commission;
         topicDeadlines[topicID] = deadline;
         topicSchedules[topicID] = schedule;
         topicMinimum[topicID] = minimum;
+        // topicCommissions[topicID] = commission;
 
-        /* By adding the initial pool to the topic creator's, 
-        but not associating it with any results, we allow the creator to incentivize 
-        people to participate without needing to place a bet themselves. */
-        userPools[topicID][msg.sender] += initialPool;
-        topicPools[topicID] = initialPool;
+        // /* By adding the initial pool to the topic creator's, 
+        // but not associating it with any results, we allow the creator to incentivize 
+        // people to participate without needing to place a bet themselves. */
+        // userPools[topicID][msg.sender] += initialPool;
+        // topicPools[topicID] = initialPool;
 
         // initialize the sides, set pool for each side to 0
         for (uint i = 0; i < sides.length; i++) {
             resultPools[topicID][sides[i]] = 0;
         }
 
-        emit CreatedBet(topicID, initialPool, description, topic);
+        emit CreatedBet(topicID, description, topic);
     }
 
     // The table in the frontend representing each topic's pool is populated according to these events.
@@ -122,7 +118,7 @@ contract PredictionMarket{
     mapping(string => mapping(address => mapping(string => uint256))) public userBets;
     
     // only allow user to bet on 1 topic and 1 side each time
-    function placeBet(string memory topicID, string memory side, uint256 bet) public payable {
+    function placeBet(string memory topicID, string memory side) public payable {
         require(
             // results.length > 0 
             // && results.length == amounts.length 
@@ -131,15 +127,14 @@ contract PredictionMarket{
             && topicDeadlines[topicID] >= block.timestamp,
         "Unable to place bets, check arguments.");
 
-        uint256 total = msg.value;
+        uint256 bet = msg.value;
 
         require(
         bytes(side).length > 0 
-        && total >= bet 
-        && bet >= topicMinimum[topicID],
+        && msg.value >= topicMinimum[topicID],
         "Attempted to place invalid bet, check amounts and results");
 
-        bet -= fixedCommission;
+        // bet -= fixedCommission;
 
         // Update all required state
         resultPools[topicID][side] += bet;
@@ -147,9 +142,9 @@ contract PredictionMarket{
         topicPools[topicID] += bet;
         userBets[topicID][msg.sender][side] += bet;
 
-        // Fixed commission transfer
-        (bool success, ) = contractCreator.call.value(fixedCommission)("");
-        require(success, "Failed to transfer fixed commission to contract creator.");
+        // // Fixed commission transfer
+        // (bool success, ) = contractCreator.call.value(fixedCommission)("");
+        // require(success, "Failed to transfer fixed commission to contract creator.");
 
         emit PlacedBets(msg.sender, topicID, topicID, side);
     }
@@ -158,12 +153,17 @@ contract PredictionMarket{
     mapping(string => bool) public finishedTopics;
     mapping(string => string) public topicResults;
 
+    // Emit result
+    event ReportedResult(string indexed _id, string result);
+
     // Function executed by oracle when the topic is scheduled to close
     function reportResult(string memory topicID, string memory result) public {
         require(msg.sender == oracle && !finishedTopics[topicID], 'only oracle can report the result');
         
         topicResults[topicID] = result;
         finishedTopics[topicID] = true;
+
+        emit ReportedResult(topicID, result);
     }
 
     // For each bet, track which users have already claimed their potential reward
@@ -197,39 +197,33 @@ contract PredictionMarket{
         
         claimedBets[topicID][msg.sender] = true;
         
-        // What's the final result?
         string memory result = topicResults[topicID];
-        
-        // Did the user bet on the correct result?
         uint256 userBet = userBets[topicID][msg.sender][result];
-        
-        // How much did everyone pool into the correct result?
         uint256 winnerPool = resultPools[topicID][result];
-        
         uint256 reward;
         
-        // If no one won then all bets are refunded
         if (winnerPool == 0) {
-            emit UnwonBet(msg.sender);
+            // If no one won then all bets are refunded
             reward = userPools[topicID][msg.sender];
+            emit UnwonBet(msg.sender);
         } else if (userBet != 0) {
-            // User won the bet and receives their corresponding share of the loser's pool
-            uint256 loserPool = topicPools[topicID] - winnerPool;
-            emit WonBet(msg.sender, reward);
             // User gets their corresponding fraction of the loser's pool, along with their original bet
-            reward = loserPool / (winnerPool / userBet) + userBet;
+            uint256 loserPool = topicPools[topicID] - winnerPool;
+            reward = userBet + loserPool * userBet / winnerPool;
+            emit WonBet(msg.sender, reward);
         } else {
-            // Sad violin noises
+            // User lost
             emit LostBet(msg.sender);
             return;
         }
         
         // Bet owner gets their commission
-        uint256 ownerFee = reward / topicCommissions[topicID];
-        reward -= ownerFee;
+        // uint256 ownerFee = reward - topicCommissions[topicID];
+        // reward -= ownerFee;
         (bool success, ) = msg.sender.call.value(reward)("");
         require(success, "Failed to transfer reward to user.");
-        (success, ) = topicOwners[topicID].call.value(ownerFee)("");
-        require(success, "Failed to transfer commission to bet owner.");
+        // (success, ) = topicOwners[topicID].call.value(ownerFee)("");
+        // require(success, "Failed to transfer commission to bet owner.");
+        emit WonBet(msg.sender, reward);
     }
 }
