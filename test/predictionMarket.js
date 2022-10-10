@@ -25,6 +25,7 @@ contract('PredictionMarket', addresses => {
       1765217612, 
       1765217612, 
       2, 
+      10,
       "description",
       {from: gambler1}
     );
@@ -35,7 +36,6 @@ contract('PredictionMarket', addresses => {
       ))
     ))
     .map(balance => (balance));
-
     console.log(balances1);
 
     // string memory topicID, string memory side, uint256 bet
@@ -51,7 +51,6 @@ contract('PredictionMarket', addresses => {
       ))
     ))
     .map(balance => (balance));
-
     console.log(balances2);
 
     await predictionMarket.placeBet(
@@ -66,7 +65,6 @@ contract('PredictionMarket', addresses => {
       ))
     ))
     .map(balance => (balance));
-
     console.log(balances3);
     
     await predictionMarket.reportResult(
@@ -94,7 +92,6 @@ contract('PredictionMarket', addresses => {
       ))
     ))
     .map(balance => (balance));
-
     console.log(balances4);
   });
 });

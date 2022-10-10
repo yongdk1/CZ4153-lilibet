@@ -16,6 +16,12 @@ contract PredictionMarket{
         oracle = _oracle;
     }
 
+    // Prediction Market Contract Creator reward
+    // There's a 1 wei fixed commission transferred to the contract's creator for every placed bet
+    uint256 constant fixedCommission = 1;
+    // Minimum entry for all bets, topic owners cannot set it lower than this 
+    uint256 constant minimumBet = fixedCommission * 2;
+
     // topic mappings: 
     // Keep track of all createdTopics to prevent duplicates
     mapping(string => bool) public createdTopics;
@@ -29,6 +35,8 @@ contract PredictionMarket{
     // Keep track of all owners to handle commission fees
     mapping(string => address payable) public topicOwners; 
 
+    // commision related:
+    mapping(string => uint256) public topicCommissions;
     // Custom minimum entry for each topic, set by their owner
     mapping(string => uint256) public topicMinimum;
 
@@ -38,13 +46,6 @@ contract PredictionMarket{
     mapping(string => mapping(string => uint256)) public resultPools;
     // For each topic, how much each has each user put into that topic's pool; userPools[topicID][msg.sender]
     mapping(string => mapping(address => uint256)) public userPools;
-
-    // // commision related:
-    // mapping(string => uint256) public topicCommissions;
-    // // There's a 1 wei fixed commission transferred to the contract's creator for every placed bet
-    // uint256 constant fixedCommission = 1;
-    // // Minimum entry for all bets, topic owners cannot set it lower than this 
-    uint256 constant minimumBet = 2;
     
     // query price for oracle to submit bet results
     uint256 public oraclePrice;
@@ -62,7 +63,7 @@ contract PredictionMarket{
     but which can prove useful to people taking a look at the bet in the frontend. */
     event CreatedBet(string indexed _id, string description, string query);
 
-    function createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, uint64 schedule, uint256 minimum, string memory description) public payable {
+    function createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, uint64 schedule, uint256 minimum, uint256 commission, string memory description) public payable {
 
         require(
             bytes(topicID).length > 0
@@ -71,7 +72,7 @@ contract PredictionMarket{
             && deadline <= schedule // Users should only be able to place bets before it is actually executed
             // && schedule < block.timestamp + scheduleThreshold
             // && msg.value >= initialPool
-            // && commission > 1 // Commission can't be higher than 50%
+            && commission >= 5 // %Commission is 1 / commission (i.e. 20% is 1/5, commision == 5)
             && minimum >= minimumBet
             && !createdTopics[topicID], // Can't have duplicate topics
             "Unable to create topic, check arguments."
@@ -96,7 +97,7 @@ contract PredictionMarket{
         topicDeadlines[topicID] = deadline;
         topicSchedules[topicID] = schedule;
         topicMinimum[topicID] = minimum;
-        // topicCommissions[topicID] = commission;
+        topicCommissions[topicID] = commission;
 
         // /* By adding the initial pool to the topic creator's, 
         // but not associating it with any results, we allow the creator to incentivize 
@@ -121,8 +122,6 @@ contract PredictionMarket{
     // only allow user to bet on 1 topic and 1 side each time
     function placeBet(string memory topicID, string memory side) public payable {
         require(
-            // results.length > 0 
-            // && results.length == amounts.length 
             createdTopics[topicID]
             && !finishedTopics[topicID] 
             && topicDeadlines[topicID] >= block.timestamp,
@@ -135,7 +134,7 @@ contract PredictionMarket{
         && msg.value >= topicMinimum[topicID],
         "Attempted to place invalid bet, check amounts and results");
 
-        // bet -= fixedCommission;
+        bet -= fixedCommission;
 
         // Update all required state
         resultPools[topicID][side] += bet;
@@ -143,9 +142,9 @@ contract PredictionMarket{
         topicPools[topicID] += bet;
         userBets[topicID][msg.sender][side] += bet;
 
-        // // Fixed commission transfer
-        // (bool success, ) = contractCreator.call.value(fixedCommission)("");
-        // require(success, "Failed to transfer fixed commission to contract creator.");
+        // Fixed commission transfer
+        (bool success, ) = contractCreator.call{value: fixedCommission}("");
+        require(success, "Failed to transfer fixed commission to contract creator.");
 
         emit PlacedBets(msg.sender, topicID, topicID, side);
     }
@@ -219,12 +218,11 @@ contract PredictionMarket{
         }
         
         // Bet owner gets their commission
-        // uint256 ownerFee = reward - topicCommissions[topicID];
-        // reward -= ownerFee;
+        uint256 ownerFee = reward / topicCommissions[topicID];
+        reward -= ownerFee;
         (bool success, ) = msg.sender.call{value:reward}("");
         require(success, "Failed to transfer reward to user.");
-        // (success, ) = topicOwners[topicID].call.value(ownerFee)("");
-        // require(success, "Failed to transfer commission to bet owner.");
-        emit WonBet(msg.sender, reward);
+        (success, ) = topicOwners[topicID].call{value:ownerFee}("");
+        require(success, "Failed to transfer commission to bet owner.");
     }
 }
