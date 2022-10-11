@@ -79,7 +79,7 @@ function ViewList(props) {
                   );
                 })}
             </div>
-            {question.show ? <BetOption topic={question} /> : <div>WINNER: &nbsp; {question.winner}</div>}
+            {question.show ? <BetOption topic={question} /> : <div className="winner-container">WINNER: &nbsp; {question.winner}</div>}
           </div>
         );
       })}

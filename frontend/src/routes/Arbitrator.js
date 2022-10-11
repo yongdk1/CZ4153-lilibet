@@ -10,7 +10,7 @@ function Arbitrator(props) {
     event.preventDefault();
     console.log("HELLLO:", winner);
     props.disableBetting(uuid,winner);
-    alert("Winner submitted");
+    alert("Winner:", winner);
   }
 
   console.log("WINNER",winner);
@@ -26,7 +26,8 @@ function Arbitrator(props) {
           <div className="abr-item">
             <div className="font-12">{question.topic}</div>
             <div>
-              <select onChange={(e) => setWinner(e.target.value)}>
+            {/* onChange={(e) => setWinner(e.target.value)} */}
+              <select onChange={(e) => setWinner(e.target.value)} >
                 <option value={question.side1}>{question.side1}</option>
                 <option value={question.side2}>{question.side2}</option>
               </select>
