@@ -1,0 +1,106 @@
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.container-add {
+  display: flex;
+  flex-direction: row;
+}
+
+.splitScreen {
+  display: flex;
+  flex-direction: row;
+  width:96%;
+  margin:auto;
+}
+
+.table-cell {
+  width: 50%;
+}
+
+.question-attr {
+  font-weight: 600;
+  font-size: 18px;
+  text-transform: capitalize;
+}
+
+input {
+  width: 100%;
+}
+
+.navBar {
+  margin-top: 18px !important;
+  display: flex;
+  width: 30%;
+  margin: auto;
+  justify-content: space-evenly;
+}
+
+.bar {
+  font-size: 20px;
+  background-color: #0044ffa3;
+  color: white;
+  border: 1px solid white;
+  border-radius: 8px;
+}
+
+.bar:hover {
+  background-color: rgb(63, 150, 237);
+  color: black;
+}
+
+.btn-text {
+  padding: 4px 12px;
+}
+
+
+.table-cell{
+    /* margin-left: 32px;
+    margin:auto;
+    margin-top: 0; */
+    /* margin-top: 12px; */
+}
+
+.parent-container{
+    margin:auto;
+    width: 96%;
+}
+
+.view-item{
+    margin-top: 16px;
+    border: 1px solid black;
+    margin-bottom: 16px;
+    padding:8px 16px;
+    display: flex;
+}
+
+p {
+    margin-bottom: 0.5rem !important;
+}
+
+.topic-item{
+    width:50%;
+}
+
+.bet-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.bet-item{
+    width: 100%;
+}
+
+.button-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.bet-button{
+    width:49%;
+    background-color: rgb(13, 208, 238);
+    border-radius: 6px;
+    color: black;
+    font-weight: 600;
+}

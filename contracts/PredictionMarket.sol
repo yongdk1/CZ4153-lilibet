@@ -1,4 +1,4 @@
-pragma solidity ^0.7.3;
+pragma solidity ^0.8.17;
 
 contract PredictionMarket {
   enum Side { Biden, Trump }
@@ -30,7 +30,7 @@ contract PredictionMarket {
     uint gain = gamblerBet + bets[result.loser] * gamblerBet / bets[result.winner];
     betsPerGambler[msg.sender][Side.Biden] = 0;
     betsPerGambler[msg.sender][Side.Trump] = 0;
-    msg.sender.transfer(gain);
+    payable(msg.sender).transfer(gain);
   }
 
   function reportResult(Side _winner, Side _loser) external {
