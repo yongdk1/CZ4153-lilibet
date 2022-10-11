@@ -282,16 +282,29 @@ contract PredictionMarket{
         return allBetsByTopic[topicID];
     }
 
+    struct pool{
+        string side;
+        uint256 amount;
+    }
     // get pool for a topic
-    function getTopicPool(string memory topicID) public view returns (string[] memory sides, uint256[] memory amounts){
-        // mapping(string => mapping(string => uint256)) public resultPools;
+    function getTopicPool(string memory topicID) public view returns (pool[] memory){
+        pool[] memory pools = new pool[](topicSides[topicID].length);
+        
+        for (uint i = 0; i < topicSides[topicID].length; i++) {
+            pools[i] = pool(topicSides[topicID][i], resultPools[topicID][topicSides[topicID][i]]);
+        }
+
+        return pools;
+
+        /*
         uint256[] memory amounts = new uint256[](topicSides[topicID].length);
         for (uint i = 0; i < topicSides[topicID].length; i++) {
           amounts[i] = resultPools[topicID][topicSides[topicID][i]];
         }
         return (topicSides[topicID], amounts);
+        */
     }
-
+    
 
     /*
     // function to check if user has claimed the bet for a topic already
