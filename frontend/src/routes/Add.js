@@ -2,6 +2,7 @@ import React from "react";
 import { v4 as uuidv4 } from "uuid";
 
 export class MyForm extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -12,9 +13,11 @@ export class MyForm extends React.Component {
       side2: props.side2,
       deadline: props.deadline,
       resolution: props.resolution,
-      arbitrator: props.arbitrator,
       commission: props.commission,
-      initialPool: props.initialPool,
+      minimumBet: props.minimumBet,
+      arbitrator: props.arbitrator,
+      show: true,
+      winner: null,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -26,21 +29,20 @@ export class MyForm extends React.Component {
     this.setState({ [k]: evt.target.value });
   }
 
-  createUUID(){
+  createUUID() {
     const u_id = uuidv4();
-    console.log("UUID: ", u_id);
   }
 
-  handleSubmit(event){
+  // to add adding to blockchain functionality
+  handleSubmit(event) {
     event.preventDefault();
     const u_id = uuidv4();
-    console.log("UUID: ", u_id);
     this.setState({ uuid: u_id }, () => this.props.addQuestion(this.state));
     alert("You have Submitted a new Topic!");
   }
 
   render() {
-    console.log("UUID:", this.state.uuid);
+    // console.log("UUID:", this.state.uuid);
     return (
       <div>
         <form className="form" onSubmit={this.handleSubmit}>
@@ -107,7 +109,7 @@ export class MyForm extends React.Component {
               onChange={(event) => this.handleChange("minimumBet", event)}
             />
           </label>
-          <button type = "submit" className="btn btn-primary mb-2">
+          <button type="submit" className="btn btn-primary mb-2">
             Submit
           </button>
         </form>

@@ -7,11 +7,12 @@ export const questionsSample = [
     side2: "Manchester City",
     deadline: "21/05/2023",
     resolution: "22/05/2023",
-    arbitrator: "EPL Chairman",
     commission: "5%",
     minimumBet: "200",
+    arbitrator: "EPL Chairman",
+    show:true,
+    winner:null,
   },
-
   {
     uuid: "9db589c6-1fd8-4128-977f-35e7a4b410e2",
     topic: "2024 US elections",
@@ -20,8 +21,12 @@ export const questionsSample = [
     side2: "Ted Cruz",
     deadline: "21/05/2024",
     resolution: "22/05/2024",
-    arbitrator: "Electoral Committee",
     commission: "7%",
     minimumBet: "250",
+    arbitrator: "Electoral Committee",
+    show:true,
+    winner:null,
   },
 ];
+
+export const topicsResolve = [];

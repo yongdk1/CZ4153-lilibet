@@ -11,8 +11,8 @@ form {
 .splitScreen {
   display: flex;
   flex-direction: row;
-  width:96%;
-  margin:auto;
+  width: 96%;
+  margin: auto;
 }
 
 .table-cell {
@@ -32,7 +32,7 @@ input {
 .navBar {
   margin-top: 18px !important;
   display: flex;
-  width: 30%;
+  width: 40%;
   margin: auto;
   justify-content: space-evenly;
 }
@@ -54,53 +54,77 @@ input {
   padding: 4px 12px;
 }
 
-
-.table-cell{
-    /* margin-left: 32px;
+.table-cell {
+  /* margin-left: 32px;
     margin:auto;
     margin-top: 0; */
-    /* margin-top: 12px; */
+  /* margin-top: 12px; */
 }
 
-.parent-container{
-    margin:auto;
-    width: 96%;
+.parent-container {
+  margin: auto;
+  width: 96%;
 }
 
-.view-item{
-    margin-top: 16px;
-    border: 1px solid black;
-    margin-bottom: 16px;
-    padding:8px 16px;
-    display: flex;
+.view-item {
+  margin-top: 16px;
+  border: 1px solid black;
+  margin-bottom: 16px;
+  padding: 8px 16px;
+  display: flex;
+}
+
+.abr-item {
+  margin-top: 16px;
+  /* border: 1px solid black; */
+  margin-bottom: 16px;
+  padding: 8px 16px;
+  display: flex;
+  border-radius: 8px;
+  background-color: #4da3b5a3;
+  justify-content: space-between;
 }
 
 p {
-    margin-bottom: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
 }
 
-.topic-item{
-    width:50%;
+.topic-item {
+  width: 50%;
 }
 
-.bet-container{
-    display: flex;
-    flex-direction: column;
+.font-12 {
+  font-size: 20px;
+  font-weight: 600;
 }
 
-.bet-item{
-    width: 100%;
+.bet-container {
+  display: flex;
+  flex-direction: column;
 }
 
-.button-container{
-    display: flex;
-    justify-content: space-between;
+.bet-item {
+  width: 100%;
 }
 
-.bet-button{
-    width:49%;
-    background-color: rgb(13, 208, 238);
-    border-radius: 6px;
-    color: black;
-    font-weight: 600;
+.button-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.bet-button {
+  width: 49%;
+  background-color: rgb(13, 208, 238);
+  border-radius: 6px;
+  color: black;
+  font-weight: 600;
+}
+
+.resolve-bet {
+  /* width: 49%; */
+  margin-left:12px;
+  background-color: rgb(13, 208, 238);
+  border-radius: 6px;
+  color: black;
+  font-weight: 600;
 }
