@@ -19,6 +19,7 @@ contract PredictionMarket{
     uint256 constant minimumBet = fixedCommission + 1;
 
     // topic mappings: 
+    string[] public allTopics;
     // Keep track of all createdTopics to prevent duplicates
     mapping(string => bool) public createdTopics;
 
@@ -41,6 +42,7 @@ contract PredictionMarket{
 
     // Total pooled per topic
     mapping(string => uint256) public topicPools;
+
     // For each topic, how much is the total pooled per side; resultPools[topicID][side]
     mapping(string => mapping(string => uint256)) public resultPools;
     // For each topic, how much each has each user put into that topic's pool; userPools[topicID][msg.sender]
@@ -55,6 +57,37 @@ contract PredictionMarket{
     /* Contains all the information that does not need to be saved as a state variable, 
     but which can prove useful to people taking a look at the bet in the frontend. */
     event CreatedBet(string indexed _id, string description, string query);
+
+    struct topics {
+        string id;
+        string name;
+        string[] outcomes;
+        uint64 endDate;
+        uint256 minBet;
+        uint256 comm;
+        string desc;
+        address judge;
+        bool finished;
+        string result;
+    }
+
+    // list of all topics
+    // topics[] public topicList;
+    mapping(string => topics) topicList;
+
+    mapping(string => string[]) topicSides;
+
+    struct oneBet{
+        string topicid;
+        address user;
+        string side;
+        uint256 amt;
+    }
+
+    // bets by user
+    mapping(address => oneBet[]) allBets;
+    // bets by topic
+    mapping(string => oneBet[]) allBetsByTopic;
 
     function createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, uint256 minimum, uint256 commission, string memory description, address _arbitrator) public {
 
@@ -84,6 +117,7 @@ contract PredictionMarket{
         // }
 
         // Create topic
+        allTopics.push(topicID);
         createdTopics[topicID] = true;
         topicOwners[topicID] = payable(msg.sender);
         topicDeadlines[topicID] = deadline;
@@ -91,6 +125,9 @@ contract PredictionMarket{
         topicMinimum[topicID] = minimum;
         topicCommissions[topicID] = 100/commission;
         topicArbitrator[topicID]= _arbitrator;
+        topicSides[topicID] = sides;
+
+        topicList[topicID] = (topics(topicID, topic, sides, deadline, minimum, commission, description, _arbitrator, false, ""));
 
         // initialize the sides, set pool for each side to 0
         for (uint i = 0; i < sides.length; i++) {
@@ -129,6 +166,9 @@ contract PredictionMarket{
         topicPools[topicID] += bet;
         userBets[topicID][msg.sender][side] += bet;
 
+        allBets[msg.sender].push(oneBet(topicID, msg.sender, side, bet));
+        allBetsByTopic[topicID].push(oneBet(topicID, msg.sender, side, bet));
+
         // Fixed commission transfer
         (bool success, ) = contractCreator.call{value: fixedCommission}("");
         require(success, "Failed to transfer fixed commission to contract creator.");
@@ -149,6 +189,9 @@ contract PredictionMarket{
         
         topicResults[topicID] = result;
         finishedTopics[topicID] = true;
+        
+        topicList[topicID].finished = true;
+        topicList[topicID].result = result;
 
         emit ReportedResult(topicID, result);
     }
@@ -212,4 +255,50 @@ contract PredictionMarket{
         (success, ) = topicOwners[topicID].call{value:ownerFee}("");
         require(success, "Failed to transfer commission to bet owner.");
     }
+
+    // return all topics
+    function getTopics() public view returns (topics[] memory){
+        topics[] memory id = new topics[](allTopics.length);
+        for (uint i = 0; i < allTopics.length; i++) {
+          topics storage member = topicList[allTopics[i]];
+          id[i] = member;
+        }
+      return id;
+    }
+
+    // return one topic 
+    function getTopic(string memory id) public view returns (topics memory){
+        return topicList[id];
+    }
+
+    // return all bets a user has made
+    // should address be param or message sender?
+    function getUserBets(address _user) public view returns (oneBet[] memory){
+        return allBets[_user];
+    }
+
+    // return bets by topic
+    function getBetsByTopic(string memory topicID) public view returns (oneBet[] memory){
+        return allBetsByTopic[topicID];
+    }
+
+    // get pool for a topic
+    function getTopicPool(string memory topicID) public view returns (string[] memory sides, uint256[] memory amounts){
+        // mapping(string => mapping(string => uint256)) public resultPools;
+        uint256[] memory amounts = new uint256[](topicSides[topicID].length);
+        for (uint i = 0; i < topicSides[topicID].length; i++) {
+          amounts[i] = resultPools[topicID][topicSides[topicID][i]];
+        }
+        return (topicSides[topicID], amounts);
+    }
+
+
+    /*
+    // function to check if user has claimed the bet for a topic already
+
+    // function to check if user is owner of a topic
+    function isOwner(address person) public view returns (bool result){
+        topicOwners
+    }
+    */
 }

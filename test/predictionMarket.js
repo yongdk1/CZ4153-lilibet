@@ -98,5 +98,29 @@ contract('PredictionMarket', addresses => {
     .map(balance => (balance));
     console.log('final balances');
     console.log(balances4);
-  });
+  
+  const topics = (await predictionMarket.getTopics()).map(balance => (balance));
+  console.log(topics);
+
+  const x = (await predictionMarket.getTopic("6bba15ab-8667-47e2-98b4-643191bfc6a3")).map(balance => (balance));
+  console.log(x);
+
+  const balances5 = (await Promise.all( 
+    [admin, oracle, gambler1, gambler2, gambler3, gambler4].map(gambler => (
+      web3.eth.getBalance(gambler)
+    ))
+  ))
+  .map(balance => (balance));
+  console.log('check view');
+  console.log(balances5);
+
+  const bets1 = (await predictionMarket.getUserBets(gambler2));
+  console.log(bets1);
+
+  const bets2 = (await predictionMarket.getBetsByTopic("6bba15ab-8667-47e2-98b4-643191bfc6a3"));
+  console.log(bets2);
+  
+  const sides = (await predictionMarket.getTopicPool("6bba15ab-8667-47e2-98b4-643191bfc6a3"));
+  console.log(sides);
+});
 });

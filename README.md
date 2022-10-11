@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # CZ4153-lilibet
 Prediction Market utilising Ethereum, Truffle, and ReactJS
 =======
@@ -38,4 +37,3 @@ Only the specified arbitrator identity (the trusted judge after the event occurs
 3. If no one won, then all bets are refunded
 
 
->>>>>>> report-and-claim
