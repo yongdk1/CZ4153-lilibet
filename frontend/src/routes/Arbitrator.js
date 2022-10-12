@@ -6,11 +6,11 @@ function Arbitrator(props) {
 
 
   // add to blockchain
-  function handleSubmit(event,uuid){
+  function handleSubmit(event,uuid, topic){
     event.preventDefault();
     console.log("HELLLO:", winner);
     props.disableBetting(uuid,winner);
-    alert("Winner:", winner);
+    alert("You have selected a winner for: "+topic);
   }
 
   console.log("WINNER",winner);
@@ -31,7 +31,7 @@ function Arbitrator(props) {
                 <option value={question.side1}>{question.side1}</option>
                 <option value={question.side2}>{question.side2}</option>
               </select>
-              <button type="submit" onClick = {(evt)=>handleSubmit(evt,question.uuid)} className="resolve-bet">
+              <button type="submit" onClick = {(evt)=>handleSubmit(evt,question.uuid,question.topic)} className="resolve-bet">
                 Submit Result
               </button>
             </div>

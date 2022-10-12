@@ -67,9 +67,7 @@ function ViewList(props) {
         return (
           <div className="view-item">
             <div className="topic-item" key={i}>
-              {Object.keys(question)
-                .slice(1, -1)
-                .map((key, index) => {
+              {Object.keys(question).slice(1, -2).map((key, index) => {
                   return (
                     <p key={index}>
                       <span className="question-attr">{key}:</span> &nbsp;
