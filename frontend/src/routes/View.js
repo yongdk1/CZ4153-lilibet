@@ -58,41 +58,34 @@ function ViewList(props) {
           <div className="view-item">
             <div className="topic-item" key = {i}>
               {Object.keys(question).slice(11).map((key, index) => {
+                var value = question[key]
                 if (key === "endDate") {
-                  var endDate = new Date(question[key].toNumber())
-                  var stringDate = endDate.toDateString()
-                  return (
-                    <p key={index}>
-                      <span className="question-attr">
-                        {key}
-                      </span> &nbsp;{stringDate}
-                    </p>
-                  );
+                  var endDate = new Date(value.toNumber())
+                  value = endDate.toDateString()
                 }
                 else if(key === "minBet") {
-                  return (
-                    <p key={index}>
-                      <span className="question-attr">
-                        {key}:
-                      </span> &nbsp;{question[key].toNumber() + " Wei"}
-                    </p>
-                  );
+                  value = value.toNumber() + " Wei"
                 }
                 else if(key === "comm") {
-                  return (
-                    <p key={index}>
-                      <span className="question-attr">
-                        {key}:
-                      </span> &nbsp;{question[key].toNumber() + "%"}
-                    </p>
-                  );
+                  value = value.toNumber() + "%"
+                }
+                else if(key === "outcomes") {
+                  value.map((side, index) => {
+                    console.log(side)
+                    return (
+                      <p key={index}>
+                        <span className="question-attr">
+                          Side + {index}:
+                        </span> &nbsp;{side}
+                      </p>
+                    );
+                  })
                 }
                 return (
                   <p key={index}>
                     <span className="question-attr">
                       {key}:
-                    </span> &nbsp;{question[key]}
-                    {question.value}
+                    </span> &nbsp;{value}
                   </p>
                 );
               })}

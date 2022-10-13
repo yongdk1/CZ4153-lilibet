@@ -48,7 +48,7 @@ function App() {
         />
         <Route
           path="/View"
-          element={<ViewList questionList={QuestionList} />}
+          element={<ViewList questionList={topicsList} />}
         />
         <Route path="/Arbitrator" element={<Arbitrator />} />
       </Routes>
