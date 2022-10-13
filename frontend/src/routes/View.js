@@ -57,7 +57,36 @@ function ViewList(props) {
         return (
           <div className="view-item">
             <div className="topic-item" key = {i}>
-              {Object.keys(question).slice(1).map((key, index) => {
+              {Object.keys(question).slice(11).map((key, index) => {
+                if (key === "endDate") {
+                  var endDate = new Date(question[key].toNumber())
+                  var stringDate = endDate.toDateString()
+                  return (
+                    <p key={index}>
+                      <span className="question-attr">
+                        {key}
+                      </span> &nbsp;{stringDate}
+                    </p>
+                  );
+                }
+                else if(key === "minBet") {
+                  return (
+                    <p key={index}>
+                      <span className="question-attr">
+                        {key}:
+                      </span> &nbsp;{question[key].toNumber() + " Wei"}
+                    </p>
+                  );
+                }
+                else if(key === "comm") {
+                  return (
+                    <p key={index}>
+                      <span className="question-attr">
+                        {key}:
+                      </span> &nbsp;{question[key].toNumber() + "%"}
+                    </p>
+                  );
+                }
                 return (
                   <p key={index}>
                     <span className="question-attr">
