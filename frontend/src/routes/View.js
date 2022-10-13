@@ -60,8 +60,9 @@ function ViewList(props) {
               {Object.keys(question).slice(11).map((key, index) => {
                 var value = question[key]
                 if (key === "endDate") {
-                  var endDate = new Date(value.toNumber())
-                  value = endDate.toDateString()
+                  var endDate = new Date(0)
+                  endDate.setUTCSeconds(value.toNumber())
+                  value = endDate.toString()
                 }
                 else if(key === "minBet") {
                   value = value.toNumber() + " Wei"
