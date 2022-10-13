@@ -14,7 +14,7 @@ export function BetOption(props) {
         betAmount +
         " on: " +
         betSide +
-        " for " +
+        " for: " +
         props.topic.topic
     );
   }
