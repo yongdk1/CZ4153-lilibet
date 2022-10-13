@@ -57,7 +57,7 @@ function ViewList(props) {
         return (
           <div className="view-item">
             <div className="topic-item" key = {i}>
-              {Object.keys(question).slice(11).map((key, index) => {
+              {Object.keys(question = Object.fromEntries(Object.entries(question).filter(([k, v]) => isNaN(k)))).map((key, index) => {
                 var value = question[key]
                 if (key === "endDate") {
                   var endDate = new Date(0)

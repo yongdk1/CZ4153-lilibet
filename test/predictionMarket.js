@@ -102,8 +102,11 @@ contract('PredictionMarket', addresses => {
   const topics = (await predictionMarket.getTopics()).map(balance => (balance));
   console.log(topics);
 
-  const x = (await predictionMarket.getTopic("6bba15ab-8667-47e2-98b4-643191bfc6a3")).map(balance => (balance));
+  const x = (await predictionMarket.getTopic("6bba15ab-8667-47e2-98b4-643191bfc6a3"))
   console.log(x);
+  // remove duplicated entries
+  let o = Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k)));
+  console.log(o);
 
   const balances5 = (await Promise.all( 
     [admin, oracle, gambler1, gambler2, gambler3, gambler4].map(gambler => (
