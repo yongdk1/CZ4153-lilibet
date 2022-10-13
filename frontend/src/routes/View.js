@@ -7,7 +7,7 @@ export function BetOption(props) {
   function handleSubmitBet(evt) {
     console.log("Bet amount:", betAmount);
     console.log("Bet Side:", betSide);
-    alert("You have placed bet amount of: " + betAmount + " on: " + betSide + " for " + props.topic.topic);
+    alert("You have placed bet amount of " + betAmount + " Wei on: " + betSide + " for " + props.topic.name);
   }
 
   const handleChange = (evt) => {
@@ -26,16 +26,16 @@ export function BetOption(props) {
             <button
               className="bet-button"
               type="submit"
-              onClick={() => setBetSide(props.topic.side1)}
+              onClick={() => setBetSide(props.topic.outcomes[0])}
             >
-              Bet on {props.topic.side1}
+              Bet on {props.topic.outcomes[0]}
             </button>
             <button
               className="bet-button"
               type="submit"
-              onClick={() => setBetSide(props.topic.side2)}
+              onClick={() => setBetSide(props.topic.outcomes[1])}
             >
-              Bet on {props.topic.side2}
+              Bet on {props.topic.outcomes[1]}
             </button>
           </div>
         </div>
@@ -63,24 +63,34 @@ function ViewList(props) {
                   var endDate = new Date(0)
                   endDate.setUTCSeconds(value.toNumber())
                   value = endDate.toString()
+                  key = "Betting Close Date"
                 }
                 else if(key === "minBet") {
                   value = value.toNumber() + " Wei"
+                  key = "Minimum Bet"
                 }
                 else if(key === "comm") {
                   value = value.toNumber() + "%"
+                  key = "Commission"
                 }
                 else if(key === "outcomes") {
-                  value.map((side, index) => {
-                    console.log(side)
-                    return (
-                      <p key={index}>
-                        <span className="question-attr">
-                          Side + {index}:
-                        </span> &nbsp;{side}
-                      </p>
-                    );
-                  })
+                  value = value.join(', ');
+                  key = "Betting Outcomes"
+                }
+                else if(key === "name") {
+                  key = "Topic Name"
+                }
+                else if(key === "desc") {
+                  key = "Topic Description"
+                }
+                else if(key === "finished") {
+                  if (value == false) value = 'No'
+                  else value = 'Yes'
+                  key = "Has Betting Ended?"
+                }
+                else if(key === "result") {
+                  if (value == false) value = 'NA'
+                  key = "Final Result"
                 }
                 return (
                   <p key={index}>
