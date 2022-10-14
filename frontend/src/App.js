@@ -79,7 +79,7 @@ function App() {
     try {
       await predictionMarket.createTopic(
         evt.uuid,
-        evt.description,
+        evt.topic,
         [evt.side1, evt.side2],
         deadline,
         evt.minimumBet,
@@ -88,6 +88,9 @@ function App() {
         arbitrator,
         {from: signerAddress}
       );
+
+      // window.location.href = "/View";
+      window.location.replace('/View');
     } catch (err) {
       console.log(err);
       alert("Unable to add topic!");

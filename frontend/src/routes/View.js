@@ -47,6 +47,7 @@ export function BetOption(props) {
 }
 
 function ViewList(props) {
+
   const questionList = props.questionList;
 
  console.log("Questions on VIEW:", questionList);
