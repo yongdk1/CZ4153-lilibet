@@ -18,8 +18,12 @@ function App() {
     const init = async () => {
       const { signerAddress, predictionMarket } = await getBlockchain();
       const topics = await predictionMarket.getTopics();
-      const topicPool = await predictionMarket.getTopicPool();
+      var topicPool = await predictionMarket.getTopicPool();
+      // remove duplicated numerical keys due to await getter
+      topicPool = topicPool.map(x => Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k))));
+      // combine topics and topic pool into and array of dictionaries 
       var allTopics = topics.map(function(o, i) {
+        var side = topicPool.find(function(o1) {return o1.id === o.id;}).pools
         return {
           id: o.id,
           name: o.name,
@@ -31,9 +35,8 @@ function App() {
           judge: o.judge,
           finished: o.finished,
           result: o.result,
-          sides: topicPool.find(function(o1) {
-            return o1.id === o.id;
-          }).pools
+          // remove duplicated numerical keys due to await getter
+          sides: side.map(x => Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k))))
         }
       });
 
@@ -54,7 +57,7 @@ function App() {
     setQuestion([...QuestionList, evt]);
   };
 
-  console.log("Questions on APP:", topicsList);
+//  console.log("Questions on APP:", topicsList);
 
   return (
     <BrowserRouter>

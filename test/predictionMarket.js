@@ -129,8 +129,11 @@ contract('PredictionMarket', addresses => {
   console.log(sides[0]);
 
   const topics = await predictionMarket.getTopics();
-  const topicPool = await predictionMarket.getTopicPool();
+  var topicPool = await predictionMarket.getTopicPool();
+  topicPool = topicPool.map(x => Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k))));
+  console.log(topicPool);
   var allTopics = topics.map(function(o, i) {
+    var side = topicPool.find(function(o1) {return o1.id === o.id;}).pools
     return {
       id: o.id,
       name: o.name,
@@ -142,13 +145,15 @@ contract('PredictionMarket', addresses => {
       judge: o.judge,
       finished: o.finished,
       result: o.result,
-      sides: topicPool.find(function(o1) {
-        return o1.id === o.id;
-      }).pools
+      sides: side.map(x => Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k))))
     }
   });
+  /*
   allTopics.map((question,i) => {console.log(Object.keys(question))
   console.log(i)})
+    */
   console.log(allTopics)
+  console.log(allTopics[0].sides)
+
 });
 });

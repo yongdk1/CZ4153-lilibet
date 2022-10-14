@@ -13,7 +13,7 @@ export function BetOption(props) {
   const handleChange = (evt) => {
     setBetAmount(evt.target.value);
   };
-
+  // [{side: 'biden', amount: BigNumber}, {side: 'trump', amount: BigNumber}]
   return (
     <div className="topic-item">
       <form onSubmit={() => handleSubmitBet()}>
@@ -26,17 +26,18 @@ export function BetOption(props) {
             <button
               className="bet-button"
               type="submit"
-              onClick={() => setBetSide(props.topic.outcomes[0])}
+              onClick={() => setBetSide(props.topic[0].side)}
             >
-              Bet on {props.topic.outcomes[0]}
-              <br></br>Current Pool:
+              Bet on {props.topic[0].side}
+              <br></br>Current Pool:  {props.topic[0].amount.toNumber()}
             </button>
             <button
               className="bet-button"
               type="submit"
-              onClick={() => setBetSide(props.topic.outcomes[1])}
+              onClick={() => setBetSide(props.topic[1].side)}
             >
-              Bet on {props.topic.outcomes[1]}
+              Bet on {props.topic[1].side}
+              <br></br>Current Pool:  {props.topic[1].amount.toNumber()}
             </button>
           </div>
         </div>
@@ -48,7 +49,7 @@ export function BetOption(props) {
 function ViewList(props) {
   const questionList = props.questionList;
 
-// console.log("Questions on VIEW:", questionList);
+ console.log("Questions on VIEW:", questionList);
 
   return (
     <div className="parent-container">
@@ -56,11 +57,18 @@ function ViewList(props) {
       {/* <div className="topic-container"> */}
       {questionList.map((question,i) => {
         console.log(question)
+        // const keys = Object.keys(question = Object.fromEntries(Object.entries(question).filter(([k, v]) => isNaN(k))));
         const keys = Object.keys(question)
         return (
           <div className="view-item">
             <div className="topic-item" key = {i}>
-              {keys.map((key, index) => {
+              {keys.filter(function(k) {
+                  if (k === "sides") {
+                    return false; // skip
+                  }
+                return true;
+              }).map((key, index) => {
+
                 console.log(key)
                 var value = question[key]
                 console.log(value)
@@ -106,7 +114,7 @@ function ViewList(props) {
                 );
               })}
             </div>
-            <BetOption topic={question} />
+            <BetOption topic={question.sides} />
           </div>
         );
       })}
