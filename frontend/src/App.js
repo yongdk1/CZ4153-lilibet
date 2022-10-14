@@ -12,6 +12,7 @@ import "./App.css";
 function App() {
   const [predictionMarket, setPredictionMarket] = useState(undefined);
   const [QuestionList, setQuestion] = useState(constants.questionsSample);
+  const [partialTopicsList, setPartialTopics] = useState(undefined)
   const [topicsList, setTopics] = useState(undefined)
   const [signerAddress, setSignerAddress] = useState(undefined)
   const [oracleAddress, setOracleAddress] = useState(undefined)
@@ -23,6 +24,7 @@ function App() {
       setSignerAddress(signerAddress);
       setOracleAddress(oracle);
       setPredictionMarket(predictionMarket);
+      setPartialTopics(topics);
 
       var topicPool = await predictionMarket.getTopicPool();
       // remove duplicated numerical keys due to await getter
@@ -45,7 +47,7 @@ function App() {
           sides: side.map(x => Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k))))
         }
       });
-
+      
       setTopics(allTopics)
     }
     init();
@@ -111,6 +113,25 @@ function App() {
     }
   };
 
+  const handleReportResult = async (evt) => {
+    console.log(evt)
+
+    // reportResult(string memory topicID, string memory result
+    try {
+      await predictionMarket.reportResult(
+        '6bba15ab-8667-47e2-98b4-643191bfc6a3',
+        'biden',
+        {from: signerAddress}
+      );
+
+      // window.location.href = "/View";
+      window.location.replace('/View');
+    } catch (err) {
+      console.log(err);
+      alert("Unable to submit result!");
+    }
+  };
+
   const handleAddQuestion = async (evt) => {
     setQuestion([...QuestionList, evt]);
   };
@@ -135,7 +156,7 @@ function App() {
         />
         <Route
           path="/Arbitrator"
-          element={<Arbitrator questionList={topicsList} disableBetting={disableBetting} signer={signerAddress}/>}
+          element={<Arbitrator questionList={partialTopicsList} reportResult={handleReportResult} disableBetting={disableBetting} signer={signerAddress}/>}
         />
       </Routes>
     </BrowserRouter>
