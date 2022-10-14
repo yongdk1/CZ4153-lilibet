@@ -63,7 +63,7 @@ function ViewList(props) {
           <div className="view-item">
             <div className="topic-item" key = {i}>
               {keys.filter(function(k) {
-                  if (k === "sides") {
+                  if (k === "sides" || k === "id") {
                     return false; // skip
                   }
                 return true;
@@ -97,12 +97,12 @@ function ViewList(props) {
                   key = "Topic Description"
                 }
                 else if(key === "finished") {
-                  if (value == false) value = 'No'
+                  if (value === false) value = 'No'
                   else value = 'Yes'
                   key = "Has Betting Ended?"
                 }
                 else if(key === "result") {
-                  if (value == false) value = 'NA'
+                  if (value === '') value = 'NA'
                   key = "Final Result"
                 }
                 return (

@@ -21,11 +21,6 @@ class MyForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  jsDateToEpoch(d){
-    // d = javascript date obj
-    // returns epoch timestamp
-    return (d.getTime()-d.getMilliseconds())/1000;
-  }
 
   handleChange(k, evt) {
     this.setState({ [k]: evt.target.value });
@@ -33,8 +28,8 @@ class MyForm extends React.Component {
 
   handleSubmit(event){
     event.preventDefault();
-    console.log(this.deadline)
-    this.setState({deadline: this.jsDateToEpoch(new Date(this.deadline))})
+    // console.log(this.deadline)
+    // this.setState({deadline: Math.round(new Date(this.deadline).getTime()/1000)})
     const u_id = uuidv4();
     console.log("UUID: ", u_id);
     this.setState({ uuid: u_id }, () => this.props.addQuestion(this.state));
@@ -89,11 +84,11 @@ class MyForm extends React.Component {
           </label> */}
           <label>
             Arbitrator:
-            <input
-              type="text"
-              default=""
-              onChange={(event) => this.handleChange("arbitrator", event)}
-            />
+            <br></br>
+            <select name="Arbitrator" onChange={(event) => this.handleChange("arbitrator", event)} >
+                <option value="Topic Creator">Topic Creator</option>
+                <option value="Oracle">Oracle</option>
+            </select>
           </label>
           <label>
             Commission (% of winnings):
