@@ -21,7 +21,30 @@ function App() {
       const topics = await predictionMarket.getTopics();
       setSignerAddress(signerAddress);
       setPredictionMarket(predictionMarket);
-      setTopics(topics);
+
+      var topicPool = await predictionMarket.getTopicPool();
+      // remove duplicated numerical keys due to await getter
+      topicPool = topicPool.map(x => Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k))));
+      // combine topics and topic pool into and array of dictionaries 
+      var allTopics = topics.map(function(o, i) {
+        var side = topicPool.find(function(o1) {return o1.id === o.id;}).pools
+        return {
+          id: o.id,
+          name: o.name,
+          desc: o.desc,
+          outcomes: o.outcomes,
+          endDate: o.endDate.toNumber(),
+          minBet: o.minBet.toNumber(),
+          comm: o.comm.toNumber(),
+          judge: o.judge,
+          finished: o.finished,
+          result: o.result,
+          // remove duplicated numerical keys due to await getter
+          sides: side.map(x => Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k))))
+        }
+      });
+
+      setTopics(allTopics)
     }
     init();
   }, []); 
@@ -59,8 +82,12 @@ function App() {
     setQuestion([...QuestionList, evt]);
   };
 
+<<<<<<< HEAD
   console.log("Signer:", signerAddress);
   console.log("Questions on APP:", topicsList);
+=======
+//  console.log("Questions on APP:", topicsList);
+>>>>>>> fe-pool-amt
 
   return (
     <BrowserRouter>
