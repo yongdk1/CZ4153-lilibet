@@ -3,6 +3,10 @@ form {
   flex-direction: column;
 }
 
+.maxWidth{
+  width: 100%;
+}
+
 .container-add {
   display: flex;
   flex-direction: row;
@@ -67,6 +71,7 @@ input {
 }
 
 .view-item {
+  /* width: 50%; */
   margin-top: 16px;
   border: 1px solid black;
   margin-bottom: 16px;
@@ -129,11 +134,32 @@ p {
   font-weight: 600;
 }
 
+.claim-container{
+  width: 100%;
+  display: flex;
+  /* align-content: center; */
+  justify-content: center;
+}
+
+.claim-button{
+  margin-top: 16px;
+  width: 35%;
+  height: 50px;
+  background-color: #0fac0a;
+  border-radius: 6px;
+  color:white;
+  font-weight: bold;
+  border-width: 0;
+}
 .winner-container{
+  /* width: 100%; */
+  margin:auto;
+  width: 50%;
   font-size: 20px;
   font-weight: 600;
-  margin: auto;
-  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .winner-text{
@@ -151,4 +177,11 @@ p {
   66%   {color: var(--color-3)}
   99%   {color: var(--color-3)}
   100%  {color: var(--color-1)}
+}
+
+
+@media screen and (max-width: 1200px) {
+  .claim-button{
+    font-size: 16px;
+  }
 }

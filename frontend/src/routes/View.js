@@ -52,8 +52,19 @@ function BetOption(props) {
   );
 }
 
-function ClaimBetComponent(props){
-  
+function ClaimBetComponent(props) {
+
+  function handleClick() {
+    alert("You have collected your winnings for: " + props.topic.name + "!");
+  }
+
+  return (
+    <div className="claim-container">
+      <button onClick={handleClick} className="claim-button">
+        CLAIM YOUR WINNINGS
+      </button>
+    </div>
+  );
 }
 
 function ViewList(props) {
@@ -113,10 +124,12 @@ function ViewList(props) {
             </div>
             {!question.finished ? (
               <BetOption topic={question} />
+              
             ) : (
               <div className="winner-container">
-                WINNER: &nbsp;
+                WINNER:
                 <span className="winner-text">{question.result}</span>
+                <ClaimBetComponent topic = {question} />
               </div>
             )}
           </div>
