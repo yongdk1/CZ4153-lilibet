@@ -6,17 +6,10 @@ export function BetOption(props) {
 
 
   // placeBet (blockchain, predictionMarket)
-  function handleSubmitBet(evt) {
+  function handleSubmitBet() {
     console.log("Bet amount:", betAmount);
     console.log("Bet Side:", betSide);
-    alert(
-      "You have placed bet amount of: " +
-        betAmount +
-        " on: " +
-        betSide +
-        " for: " +
-        props.topic.topic
-    );
+    alert("You have placed bet amount of " + betAmount + " Wei on: " + betSide + " for " + props.topic.name);
   }
 
   const handleChange = (evt) => {
@@ -35,16 +28,16 @@ export function BetOption(props) {
             <button
               className="bet-button"
               type="submit"
-              onClick={() => setBetSide(props.topic.side1)}
+              onClick={() => setBetSide(props.topic.outcomes[0])}
             >
-              Bet on {props.topic.side1}
+              Bet on {props.topic.outcomes[0]}
             </button>
             <button
               className="bet-button"
               type="submit"
-              onClick={() => setBetSide(props.topic.side2)}
+              onClick={() => setBetSide(props.topic.outcomes[1])}
             >
-              Bet on {props.topic.side2}
+              Bet on {props.topic.outcomes[1]}
             </button>
           </div>
         </div>
@@ -64,20 +57,55 @@ function ViewList(props) {
       {/* <div className="topic-container"> */}
       {questionList.map((question, i) => {
         // console.log("WINNER:", question.winner);
+        console.log(question.finished);
         return (
           <div className="view-item">
-            <div className="topic-item" key={i}>
-              {Object.keys(question).slice(1, -2).map((key, index) => {
-                  return (
-                    <p key={index}>
-                      <span className="question-attr">{key}:</span> &nbsp;
-                      {question[key]}
-                      {question.value}
-                    </p>
-                  );
-                })}
+            <div className="topic-item" key = {i}>
+              {Object.keys(question = Object.fromEntries(Object.entries(question).filter(([k, v]) => isNaN(k)))).map((key, index) => {
+                var value = question[key]
+                if (key === "endDate") {
+                  var endDate = new Date(0)
+                  endDate.setUTCSeconds(value.toNumber())
+                  value = endDate.toString()
+                  key = "Betting Close Date"
+                }
+                else if(key === "minBet") {
+                  value = value.toNumber() + " Wei"
+                  key = "Minimum Bet"
+                }
+                else if(key === "comm") {
+                  value = value.toNumber() + "%"
+                  key = "Commission"
+                }
+                else if(key === "outcomes") {
+                  value = value.join(', ');
+                  key = "Betting Outcomes"
+                }
+                else if(key === "name") {
+                  key = "Topic Name"
+                }
+                else if(key === "desc") {
+                  key = "Topic Description"
+                }
+                else if(key === "finished") {
+                  if (value == false) value = 'No'
+                  else value = 'Yes'
+                  key = "Has Betting Ended?"
+                }
+                else if(key === "result") {
+                  if (value == false) value = 'NA'
+                  key = "Final Result"
+                }
+                return (
+                  <p key={index}>
+                    <span className="question-attr">
+                      {key}:
+                    </span> &nbsp;{value}
+                  </p>
+                );
+              })}
             </div>
-            {question.show ? <BetOption topic={question} /> : <div className="winner-container">WINNER: &nbsp; {question.winner}</div>}
+            {!question.finished ? <BetOption topic={question} /> : <div className="winner-container">WINNER: &nbsp; {question.winner}</div>}
           </div>
         );
       })}

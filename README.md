@@ -11,6 +11,8 @@ Solidity `0.8.17` is used.
 
 `truffle compile`
 
+`truffle develop` > `migrate --reset` > `deploy`
+
 ## Key Functionalities
 
 ### Create a Topic
