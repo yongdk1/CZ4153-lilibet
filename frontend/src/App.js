@@ -39,9 +39,6 @@ function App() {
     return "Loading...";
   }
 
-  // const handleAddQuestion = (evt) => {
-  //   setQuestion([...QuestionList, evt]);
-  // };
 
   //write function to retrieve QuestionList from Blockchain
   function retrieveTopics(){

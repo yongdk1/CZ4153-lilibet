@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export function BetOption(props) {
+function BetOption(props) {
   const [betAmount, setBetAmount] = useState(0);
   const [betSide, setBetSide] = useState(0);
 
@@ -50,6 +50,10 @@ export function BetOption(props) {
       </form>
     </div>
   );
+}
+
+function ClaimBetComponent(props){
+  
 }
 
 function ViewList(props) {

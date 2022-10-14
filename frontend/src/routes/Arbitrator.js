@@ -4,14 +4,14 @@ function Arbitrator(props) {
   const [winner, setWinner] = useState(null);
 
   // add to blockchain
-  function handleSubmit(event, uuid, topic) {
-    if (winner == null) {
-      alert("Please select a valid result for: " + topic);
+  function handleSubmit(event, question) {
+    if (winner != question["outcomes"][0] && winner != question["outcomes"][1] ) {
+      alert("Please select a valid result for: " + question.name);
     } else {
       event.preventDefault();
       // console.log("HELLLO:", winner);
-      props.disableBetting(uuid, winner);
-      alert("You have selected a winner for: " + topic);
+      props.disableBetting(question.id, winner);
+      alert("You have selected a winner for: " + question.name);
     }
   }
 
@@ -25,7 +25,6 @@ function Arbitrator(props) {
       </h2>
       {questionList.map((question, i) => {
         return (
-          // {question.finished? : null}
           <div>
             {!question.finished && question.judge == props.signer? (
               <div className="abr-item">
@@ -43,7 +42,7 @@ function Arbitrator(props) {
                   <button
                     type="submit"
                     onClick={(evt) =>
-                      handleSubmit(evt, question.id, question.name)
+                      handleSubmit(evt, question)
                     }
                     className="resolve-bet"
                   >
