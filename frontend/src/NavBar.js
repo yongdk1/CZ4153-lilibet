@@ -19,6 +19,11 @@ const NavBar = () => {
           <div className="btn-text">Resolve Topic</div>
         </button>
       </Link>
+      <Link to="/UserBets" className="bar">
+        <button className="bar">
+          <div className="btn-text">Current Bets</div>
+        </button>
+      </Link>
     </div>
   );
 };

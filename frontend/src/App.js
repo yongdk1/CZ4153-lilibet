@@ -8,14 +8,13 @@ import NavBar from "./NavBar.js";
 import * as constants from "./constants.js";
 import getBlockchain from "./ethereum.js";
 import "./App.css";
+import UserBets from "./routes/UserBets.js";
 
 function App() {
   const [predictionMarket, setPredictionMarket] = useState(undefined);
   const [QuestionList, setQuestion] = useState(constants.questionsSample);
   const [topicsList, setTopics] = useState(undefined)
   const [signerAddress, setSignerAddress] = useState(undefined)
-
-
 
   useEffect(() => {
     const init = async () => {
@@ -105,6 +104,7 @@ function App() {
           path="/Arbitrator"
           element={<Arbitrator questionList={topicsList} disableBetting={disableBetting} signer={signerAddress}/>}
         />
+        <Route path = "/UserBets" element={<UserBets questionList={topicsList} />}/>
       </Routes>
     </BrowserRouter>
   );

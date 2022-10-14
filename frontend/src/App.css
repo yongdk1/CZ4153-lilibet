@@ -36,17 +36,18 @@ input {
 .navBar {
   margin-top: 18px !important;
   display: flex;
-  width: 40%;
+  width: 60%;
   margin: auto;
   justify-content: space-evenly;
 }
 
 .bar {
-  font-size: 20px;
+  font-size: 16px;
   background-color: #0044ffa3;
   color: white;
   border: 1px solid white;
   border-radius: 8px;
+  border-width: 0;
 }
 
 .bar:hover {
