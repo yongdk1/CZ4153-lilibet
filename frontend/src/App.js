@@ -82,12 +82,9 @@ function App() {
     setQuestion([...QuestionList, evt]);
   };
 
-<<<<<<< HEAD
+
   console.log("Signer:", signerAddress);
-  console.log("Questions on APP:", topicsList);
-=======
 //  console.log("Questions on APP:", topicsList);
->>>>>>> fe-pool-amt
 
   return (
     <BrowserRouter>
