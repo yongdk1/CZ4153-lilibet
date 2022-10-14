@@ -1,38 +1,40 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
 
-export class MyForm extends React.Component {
+class MyForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       uuid: "",
-      topic: props.topic,
-      description: props.description,
-      side1: props.side1,
-      side2: props.side2,
-      deadline: props.deadline,
-      resolution: props.resolution,
-      arbitrator: props.arbitrator,
-      commission: props.commission,
-      initialPool: props.initialPool,
+      topic: "",
+      description: "",
+      side1: "",
+      side2: "",
+      deadline: new Date(0),
+      // resolution: "",
+      arbitrator: this.props.signerAddress,
+      commission: 0,
+      minimumBet: 0
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.createUUID = this.createUUID.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  jsDateToEpoch(d){
+    // d = javascript date obj
+    // returns epoch timestamp
+    return (d.getTime()-d.getMilliseconds())/1000;
   }
 
   handleChange(k, evt) {
     this.setState({ [k]: evt.target.value });
   }
 
-  createUUID(){
-    const u_id = uuidv4();
-    console.log("UUID: ", u_id);
-  }
-
   handleSubmit(event){
     event.preventDefault();
+    console.log(this.deadline)
+    this.setState({deadline: this.jsDateToEpoch(new Date(this.deadline))})
     const u_id = uuidv4();
     console.log("UUID: ", u_id);
     this.setState({ uuid: u_id }, () => this.props.addQuestion(this.state));
@@ -40,7 +42,6 @@ export class MyForm extends React.Component {
   }
 
   render() {
-    console.log("UUID:", this.state.uuid);
     return (
       <div>
         <form className="form" onSubmit={this.handleSubmit}>
@@ -75,35 +76,40 @@ export class MyForm extends React.Component {
           <label>
             Deadline to place bets:
             <input
-              type="text"
+              type="date"
               onChange={(event) => this.handleChange("deadline", event)}
             />
           </label>
-          <label>
+          {/* <label>
             Resolution:
             <input
               type="text"
               onChange={(event) => this.handleChange("resolution", event)}
             />
-          </label>
+          </label> */}
           <label>
             Arbitrator:
             <input
               type="text"
+              default=""
               onChange={(event) => this.handleChange("arbitrator", event)}
             />
           </label>
           <label>
-            Commission for contract creator:
+            Commission (% of winnings):
             <input
-              type="text"
+              type="number"
+              max="20"
+              placeholder="must be below 20%"
               onChange={(event) => this.handleChange("commission", event)}
             />
           </label>
           <label>
-            Minimum Bet:
+            Minimum Bet (in Wei):
             <input
-              type="text"
+              type="number"
+              min="100"
+              placeholder="must be above 100"
               onChange={(event) => this.handleChange("minimumBet", event)}
             />
           </label>
@@ -130,7 +136,7 @@ function Add(props) {
           <p>Number of Questions:</p>
           <p>Block Number:</p>
         </div>
-        <MyForm className="table-cell" addQuestion={props.addQuestion} />
+        <MyForm className="table-cell" addQuestion={props.addQuestion} signerAddress={props.signerAddress}/>
       </div>
     </div>
   );
