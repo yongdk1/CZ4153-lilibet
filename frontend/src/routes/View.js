@@ -19,7 +19,7 @@ export function BetOption(props) {
       <form onSubmit={() => handleSubmitBet()}>
         <div className="bet-container">
           <label className="bet-item">
-            Amount to bet:
+            Amount to bet (Wei):
             <input type="text" onChange={(event) => handleChange(event)} />
           </label>
           <div className="button-container">
@@ -29,6 +29,7 @@ export function BetOption(props) {
               onClick={() => setBetSide(props.topic.outcomes[0])}
             >
               Bet on {props.topic.outcomes[0]}
+              <br></br>Current Pool:
             </button>
             <button
               className="bet-button"
@@ -47,30 +48,34 @@ export function BetOption(props) {
 function ViewList(props) {
   const questionList = props.questionList;
 
-  // console.log("Questions on VIEW:", questionList);
+// console.log("Questions on VIEW:", questionList);
 
   return (
     <div className="parent-container">
       <h2 className="addHeader">List of Topics currently:</h2>
       {/* <div className="topic-container"> */}
       {questionList.map((question,i) => {
+        console.log(question)
+        const keys = Object.keys(question)
         return (
           <div className="view-item">
             <div className="topic-item" key = {i}>
-              {Object.keys(question = Object.fromEntries(Object.entries(question).filter(([k, v]) => isNaN(k)))).map((key, index) => {
+              {keys.map((key, index) => {
+                console.log(key)
                 var value = question[key]
+                console.log(value)
                 if (key === "endDate") {
                   var endDate = new Date(0)
-                  endDate.setUTCSeconds(value.toNumber())
+                  endDate.setUTCSeconds(value)
                   value = endDate.toString()
                   key = "Betting Close Date"
                 }
                 else if(key === "minBet") {
-                  value = value.toNumber() + " Wei"
+                  value = value + " Wei"
                   key = "Minimum Bet"
                 }
                 else if(key === "comm") {
-                  value = value.toNumber() + "%"
+                  value = value + "%"
                   key = "Commission"
                 }
                 else if(key === "outcomes") {

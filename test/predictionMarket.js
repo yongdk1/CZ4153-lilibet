@@ -99,8 +99,10 @@ contract('PredictionMarket', addresses => {
     console.log('final balances');
     console.log(balances4);
   
-  const topics = (await predictionMarket.getTopics()).map(balance => (balance));
-  console.log(topics);
+  const topicsx = (await predictionMarket.getTopics());
+  console.log(topicsx);
+  topicsx.map((question,i) => {console.log(question)
+    console.log(i)})
 
   const x = (await predictionMarket.getTopic("6bba15ab-8667-47e2-98b4-643191bfc6a3"))
   console.log(x);
@@ -123,7 +125,30 @@ contract('PredictionMarket', addresses => {
   const bets2 = (await predictionMarket.getBetsByTopic("6bba15ab-8667-47e2-98b4-643191bfc6a3"));
   console.log(bets2);
   
-  const sides = (await predictionMarket.getTopicPool("6bba15ab-8667-47e2-98b4-643191bfc6a3"));
-  console.log(sides);
+  const sides = (await predictionMarket.getTopicPool());
+  console.log(sides[0]);
+
+  const topics = await predictionMarket.getTopics();
+  const topicPool = await predictionMarket.getTopicPool();
+  var allTopics = topics.map(function(o, i) {
+    return {
+      id: o.id,
+      name: o.name,
+      desc: o.desc,
+      outcomes: o.outcomes,
+      endDate: o.endDate,
+      minBet: o.minBet,
+      comm: o.comm,
+      judge: o.judge,
+      finished: o.finished,
+      result: o.result,
+      sides: topicPool.find(function(o1) {
+        return o1.id === o.id;
+      }).pools
+    }
+  });
+  allTopics.map((question,i) => {console.log(Object.keys(question))
+  console.log(i)})
+  console.log(allTopics)
 });
 });

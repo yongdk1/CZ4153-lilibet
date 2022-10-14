@@ -18,8 +18,27 @@ function App() {
     const init = async () => {
       const { signerAddress, predictionMarket } = await getBlockchain();
       const topics = await predictionMarket.getTopics();
+      const topicPool = await predictionMarket.getTopicPool();
+      var allTopics = topics.map(function(o, i) {
+        return {
+          id: o.id,
+          name: o.name,
+          desc: o.desc,
+          outcomes: o.outcomes,
+          endDate: o.endDate.toNumber(),
+          minBet: o.minBet.toNumber(),
+          comm: o.comm.toNumber(),
+          judge: o.judge,
+          finished: o.finished,
+          result: o.result,
+          sides: topicPool.find(function(o1) {
+            return o1.id === o.id;
+          }).pools
+        }
+      });
+
       setPredictionMarket(predictionMarket)
-      setTopics(topics)
+      setTopics(allTopics)
     }
     init();
   }, []); 
