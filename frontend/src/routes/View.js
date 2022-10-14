@@ -4,12 +4,18 @@ export function BetOption(props) {
   const [betAmount, setBetAmount] = useState(0);
   const [betSide, setBetSide] = useState(0);
 
-
   // placeBet (blockchain, predictionMarket)
   function handleSubmitBet() {
     console.log("Bet amount:", betAmount);
     console.log("Bet Side:", betSide);
-    alert("You have placed bet amount of " + betAmount + " Wei on: " + betSide + " for " + props.topic.name);
+    alert(
+      "You have placed bet amount of " +
+        betAmount +
+        " Wei on: " +
+        betSide +
+        " for " +
+        props.topic.name
+    );
   }
 
   const handleChange = (evt) => {
@@ -57,55 +63,58 @@ function ViewList(props) {
       {/* <div className="topic-container"> */}
       {questionList.map((question, i) => {
         // console.log("WINNER:", question.winner);
-        console.log(question.finished);
+        // console.log();
         return (
           <div className="view-item">
-            <div className="topic-item" key = {i}>
-              {Object.keys(question = Object.fromEntries(Object.entries(question).filter(([k, v]) => isNaN(k)))).map((key, index) => {
-                var value = question[key]
+            <div className="topic-item" key={i}>
+              {Object.keys(
+                (question = Object.fromEntries(
+                  Object.entries(question).filter(([k, v]) => isNaN(k))
+                ))
+              ).map((key, index) => {
+                // console.log("VIEW:", question);
+                var value = question[key];
                 if (key === "endDate") {
-                  var endDate = new Date(0)
-                  endDate.setUTCSeconds(value.toNumber())
-                  value = endDate.toString()
-                  key = "Betting Close Date"
-                }
-                else if(key === "minBet") {
-                  value = value.toNumber() + " Wei"
-                  key = "Minimum Bet"
-                }
-                else if(key === "comm") {
-                  value = value.toNumber() + "%"
-                  key = "Commission"
-                }
-                else if(key === "outcomes") {
-                  value = value.join(', ');
-                  key = "Betting Outcomes"
-                }
-                else if(key === "name") {
-                  key = "Topic Name"
-                }
-                else if(key === "desc") {
-                  key = "Topic Description"
-                }
-                else if(key === "finished") {
-                  if (value == false) value = 'No'
-                  else value = 'Yes'
-                  key = "Has Betting Ended?"
-                }
-                else if(key === "result") {
-                  if (value == false) value = 'NA'
-                  key = "Final Result"
+                  var endDate = new Date(0);
+                  endDate.setUTCSeconds(value.toNumber());
+                  value = endDate.toString();
+                  key = "Betting Close Date";
+                } else if (key === "minBet") {
+                  value = value.toNumber() + " Wei";
+                  key = "Minimum Bet";
+                } else if (key === "comm") {
+                  value = value.toNumber() + "%";
+                  key = "Commission";
+                } else if (key === "outcomes") {
+                  value = value.join(", ");
+                  key = "Betting Outcomes";
+                } else if (key === "name") {
+                  key = "Topic Name";
+                } else if (key === "desc") {
+                  key = "Topic Description";
+                } else if (key === "finished") {
+                  if (value == false) value = "No";
+                  else value = "Yes";
+                  key = "Has Betting Ended?";
+                } else if (key === "result") {
+                  if (value == false) value = "NA";
+                  key = "Final Result";
                 }
                 return (
                   <p key={index}>
-                    <span className="question-attr">
-                      {key}:
-                    </span> &nbsp;{value}
+                    <span className="question-attr">{key}:</span> &nbsp;{value}
                   </p>
                 );
               })}
             </div>
-            {!question.finished ? <BetOption topic={question} /> : <div className="winner-container">WINNER: &nbsp; {question.winner}</div>}
+            {!question.finished ? (
+              <BetOption topic={question} />
+            ) : (
+              <div className="winner-container">
+                WINNER: &nbsp;
+                <span className="winner-text">{question.result}</span>
+              </div>
+            )}
           </div>
         );
       })}

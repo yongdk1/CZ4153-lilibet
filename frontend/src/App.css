@@ -128,3 +128,27 @@ p {
   color: black;
   font-weight: 600;
 }
+
+.winner-container{
+  font-size: 20px;
+  font-weight: 600;
+  margin: auto;
+  margin-top: 0;
+}
+
+.winner-text{
+  animation: color-animation 4s linear infinite;
+  --color-1: #ea1f34;
+  --color-2: #0922c2;
+  --color-3: #E4A9A8;
+}
+
+@keyframes color-animation {
+  0%    {color: var(--color-1)}
+  32%   {color: var(--color-1)}
+  33%   {color: var(--color-2)}
+  65%   {color: var(--color-2)}
+  66%   {color: var(--color-3)}
+  99%   {color: var(--color-3)}
+  100%  {color: var(--color-1)}
+}
