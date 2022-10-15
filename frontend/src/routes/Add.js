@@ -117,16 +117,17 @@ class MyForm extends React.Component {
 
 function Add(props) {
   console.log("Questions on ADD:", props.questionList);
+  const questionList = props.questionList;
   return (
     <div className="parent-container">
       <h2 className="addHeader">Add A Topic</h2>
       <div className="splitScreen">
         <div className="table-cell">
           <h4>General Info:</h4>
-          <p>Your address:</p>
+          <p>Your address: {props.signerAddress}</p>
+          <p>Number of Topics: {questionList.length}</p>
           <p>Your info:</p>
-          <p>Contract Owner:</p>
-          <p>Number of Questions:</p>
+          <p>Contract Owner: </p>
           <p>Block Number:</p>
         </div>
         <MyForm className="table-cell" addQuestion={props.addQuestion} signerAddress={props.signerAddress}/>
