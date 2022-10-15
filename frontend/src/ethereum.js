@@ -16,9 +16,12 @@ const getBlockchain = () =>
           signer
         );
 
-        resolve({signerAddress, predictionMarket});
+        // added oracle info
+        const oracle = await predictionMarket.getOracle();
+
+        resolve({signerAddress, predictionMarket, oracle});
       }
-      resolve({signerAddress: undefined, predictionMarket: undefined});
+      resolve({signerAddress: undefined, predictionMarket: undefined, oracle: false});
     });
   });
 

@@ -1,0 +1,154 @@
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.container-add {
+  display: flex;
+  flex-direction: row;
+}
+
+.splitScreen {
+  display: flex;
+  flex-direction: row;
+  width: 96%;
+  margin: auto;
+}
+
+.table-cell {
+  width: 50%;
+}
+
+.question-attr {
+  font-weight: 600;
+  font-size: 18px;
+  text-transform: capitalize;
+}
+
+input {
+  width: 100%;
+}
+
+.navBar {
+  margin-top: 18px !important;
+  display: flex;
+  width: 40%;
+  margin: auto;
+  justify-content: space-evenly;
+}
+
+.bar {
+  font-size: 20px;
+  background-color: #0044ffa3;
+  color: white;
+  border: 1px solid white;
+  border-radius: 8px;
+}
+
+.bar:hover {
+  background-color: rgb(63, 150, 237);
+  color: black;
+}
+
+.btn-text {
+  padding: 4px 12px;
+}
+
+.table-cell {
+  /* margin-left: 32px;
+    margin:auto;
+    margin-top: 0; */
+  /* margin-top: 12px; */
+}
+
+.parent-container {
+  margin: auto;
+  width: 96%;
+}
+
+.view-item {
+  margin-top: 16px;
+  border: 1px solid black;
+  margin-bottom: 16px;
+  padding: 8px 16px;
+  display: flex;
+}
+
+.abr-item {
+  margin-top: 16px;
+  /* border: 1px solid black; */
+  margin-bottom: 16px;
+  padding: 8px 16px;
+  display: flex;
+  border-radius: 8px;
+  background-color: #4da3b5a3;
+  justify-content: space-between;
+}
+
+p {
+  margin-bottom: 0.5rem !important;
+}
+
+.topic-item {
+  width: 50%;
+}
+
+.font-12 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.bet-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.bet-item {
+  width: 100%;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.bet-button {
+  width: 49%;
+  background-color: rgb(13, 208, 238);
+  border-radius: 6px;
+  color: black;
+  font-weight: 600;
+}
+
+.resolve-bet {
+  /* width: 49%; */
+  margin-left:12px;
+  background-color: rgb(13, 208, 238);
+  border-radius: 6px;
+  color: black;
+  font-weight: 600;
+}
+
+.winner-container{
+  font-size: 20px;
+  font-weight: 600;
+  margin: auto;
+  margin-top: 0;
+}
+
+.winner-text{
+  animation: color-animation 4s linear infinite;
+  --color-1: #ea1f34;
+  --color-2: #0922c2;
+  --color-3: #E4A9A8;
+}
+
+@keyframes color-animation {
+  0%    {color: var(--color-1)}
+  32%   {color: var(--color-1)}
+  33%   {color: var(--color-2)}
+  65%   {color: var(--color-2)}
+  66%   {color: var(--color-3)}
+  99%   {color: var(--color-3)}
+  100%  {color: var(--color-1)}
+}
