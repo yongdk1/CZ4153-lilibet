@@ -70,6 +70,7 @@ function ClaimBetComponent(props) {
 }
 
 function ViewList(props) {
+
   const questionList = props.questionList;
 
  console.log("Questions on VIEW:", questionList);
@@ -135,9 +136,9 @@ function ViewList(props) {
                 );
               })}
             </div>
+
             {!question.finished ? (
               <BetOption topic={question.sides} />
-              
             ) : (
               <div className="winner-container">
                 WINNER:
@@ -145,7 +146,6 @@ function ViewList(props) {
                 <ClaimBetComponent topic = {question} />
               </div>
             )}
-            {/* <BetOption topic={question.sides} /> */}
           </div>
         );
       })}

@@ -13,6 +13,7 @@ import UserBets from "./routes/UserBets.js";
 function App() {
   const [predictionMarket, setPredictionMarket] = useState(undefined);
   const [QuestionList, setQuestion] = useState(constants.questionsSample);
+  const [partialTopicsList, setPartialTopics] = useState(undefined)
   const [topicsList, setTopics] = useState(undefined)
   const [signerAddress, setSignerAddress] = useState(undefined)
   const [oracleAddress, setOracleAddress] = useState(undefined)
@@ -24,6 +25,7 @@ function App() {
       setSignerAddress(signerAddress);
       setOracleAddress(oracle);
       setPredictionMarket(predictionMarket);
+      setPartialTopics(topics);
 
       var topicPool = await predictionMarket.getTopicPool();
       // remove duplicated numerical keys due to await getter
@@ -46,7 +48,7 @@ function App() {
           sides: side.map(x => Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k))))
         }
       });
-
+      
       setTopics(allTopics)
     }
     init();
@@ -61,10 +63,6 @@ function App() {
   }
 
 
-  //write function to retrieve QuestionList from Blockchain
-  function retrieveTopics(){
-    
-  }
 
   function disableBetting(uuid, winner) {
 
@@ -79,12 +77,6 @@ function App() {
     }
   }
 
-  console.log("Questions on APP:", topicsList[0]);
-
-  // createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, uint256 minimum, uint256 commission, string memory description, address _arbitrator)
-  // const handleAddTopic = async (evt) => {
-  //   console.log(evt)
-  
 
   // createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, 
   // uint256 minimum, uint256 commission, string memory description, address _arbitrator)
@@ -104,7 +96,7 @@ function App() {
     try {
       await predictionMarket.createTopic(
         evt.uuid,
-        evt.description,
+        evt.topic,
         [evt.side1, evt.side2],
         deadline,
         evt.minimumBet,
@@ -113,9 +105,30 @@ function App() {
         arbitrator,
         {from: signerAddress}
       );
+
+      // window.location.href = "/View";
+      window.location.replace('/View');
     } catch (err) {
       console.log(err);
       alert("Unable to add topic!");
+    }
+  };
+
+  const handleReportResult = async (uuid, winner) => {
+
+    // reportResult(string memory topicID, string memory result
+    try {
+      await predictionMarket.reportResult(
+        uuid,
+        winner,
+        {from: signerAddress}
+      );
+
+      // window.location.href = "/View";
+      window.location.replace('/View');
+    } catch (err) {
+      console.log(err);
+      alert("Unable to submit result!");
     }
   };
 
@@ -143,7 +156,7 @@ function App() {
         />
         <Route
           path="/Arbitrator"
-          element={<Arbitrator questionList={topicsList} disableBetting={disableBetting} signer={signerAddress}/>}
+          element={<Arbitrator questionList={partialTopicsList} reportResult={handleReportResult} disableBetting={disableBetting} signer={signerAddress}/>}
         />
         <Route path = "/UserBets" element={<UserBets questionList={topicsList} />}/>
       </Routes>
