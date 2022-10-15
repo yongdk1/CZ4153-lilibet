@@ -14,28 +14,22 @@ class MyForm extends React.Component {
       // resolution: "",
       arbitrator: this.props.signerAddress,
       commission: 0,
-      minimumBet: 0,
+      minimumBet: 0
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  jsDateToEpoch(d) {
-    // d = javascript date obj
-    // returns epoch timestamp
-    return (d.getTime() - d.getMilliseconds()) / 1000;
-  }
 
   handleChange(k, evt) {
     this.setState({ [k]: evt.target.value });
   }
 
-  // to add adding to blockchain functionality
-  handleSubmit(event) {
+  handleSubmit(event){
     event.preventDefault();
-    console.log(this.deadline);
-    this.setState({ deadline: this.jsDateToEpoch(new Date(this.deadline)) });
+    // console.log(this.deadline)
+    // this.setState({deadline: Math.round(new Date(this.deadline).getTime()/1000)})
     const u_id = uuidv4();
     this.setState({ uuid: u_id }, () => this.props.addQuestion(this.state));
     alert("You have Submitted a new Topic!");
@@ -89,11 +83,11 @@ class MyForm extends React.Component {
           </label> */}
           <label>
             Arbitrator:
-            <input
-              type="text"
-              default=""
-              onChange={(event) => this.handleChange("arbitrator", event)}
-            />
+            <br></br>
+            <select name="Arbitrator" onChange={(event) => this.handleChange("arbitrator", event)} >
+                <option value="Topic Creator">Topic Creator</option>
+                <option value="Oracle">Oracle</option>
+            </select>
           </label>
           <label>
             Commission (% of winnings):
@@ -136,11 +130,7 @@ function Add(props) {
           <p>Number of Questions:</p>
           <p>Block Number:</p>
         </div>
-        <MyForm
-          className="table-cell"
-          addQuestion={props.addQuestion}
-          signerAddress={props.signerAddress}
-        />
+        <MyForm className="table-cell" addQuestion={props.addQuestion} signerAddress={props.signerAddress}/>
       </div>
     </div>
   );

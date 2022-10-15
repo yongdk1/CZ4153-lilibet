@@ -15,17 +15,39 @@ function App() {
   const [QuestionList, setQuestion] = useState(constants.questionsSample);
   const [topicsList, setTopics] = useState(undefined)
   const [signerAddress, setSignerAddress] = useState(undefined)
+  const [oracleAddress, setOracleAddress] = useState(undefined)
 
   useEffect(() => {
     const init = async () => {
-      const { signerAddress, predictionMarket } = await getBlockchain();
+      const { signerAddress, predictionMarket, oracle } = await getBlockchain();
       const topics = await predictionMarket.getTopics();
-      // setSignerAddress(signerAddress);
-      
-      //only for testing, to switch out with above 
-      setSignerAddress("0x0b790B0d952b394a2c25076AD3e9984b8E3c6C19");
+      setSignerAddress(signerAddress);
+      setOracleAddress(oracle);
       setPredictionMarket(predictionMarket);
-      setTopics(topics);
+
+      var topicPool = await predictionMarket.getTopicPool();
+      // remove duplicated numerical keys due to await getter
+      topicPool = topicPool.map(x => Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k))));
+      // combine topics and topic pool into and array of dictionaries 
+      var allTopics = topics.map(function(o, i) {
+        var side = topicPool.find(function(o1) {return o1.id === o.id;}).pools
+        return {
+          id: o.id,
+          name: o.name,
+          desc: o.desc,
+          outcomes: o.outcomes,
+          endDate: o.endDate.toNumber(),
+          minBet: o.minBet.toNumber(),
+          comm: o.comm.toNumber(),
+          judge: o.judge,
+          finished: o.finished,
+          result: o.result,
+          // remove duplicated numerical keys due to await getter
+          sides: side.map(x => Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k))))
+        }
+      });
+
+      setTopics(allTopics)
     }
     init();
   }, []); 
@@ -60,22 +82,39 @@ function App() {
   console.log("Questions on APP:", topicsList[0]);
 
   // createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, uint256 minimum, uint256 commission, string memory description, address _arbitrator)
+  // const handleAddTopic = async (evt) => {
+  //   console.log(evt)
+  
+
+  // createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, 
+  // uint256 minimum, uint256 commission, string memory description, address _arbitrator)
   const handleAddTopic = async (evt) => {
     console.log(evt)
+
+    // convert to epoch time
+    const deadline =  Math.round(new Date(evt.deadline).getTime()/1000);
+
+    // set arbitrator address
+    var arbitrator = signerAddress;
+    if (evt.arbitrator === 'Oracle'){
+      arbitrator = oracleAddress;
+    }
+    
+
     try {
       await predictionMarket.createTopic(
         evt.uuid,
         evt.description,
         [evt.side1, evt.side2],
-        1765217612,
-        101,
-        10,
+        deadline,
+        evt.minimumBet,
+        evt.commission,
         evt.description,
-        signerAddress,
+        arbitrator,
         {from: signerAddress}
       );
     } catch (err) {
-      // if people reject, do something, add error box in the future?
+      console.log(err);
       alert("Unable to add topic!");
     }
   };
@@ -84,8 +123,10 @@ function App() {
     setQuestion([...QuestionList, evt]);
   };
 
+
   console.log("Signer:", signerAddress);
-  console.log("Questions on APP:", topicsList);
+  console.log("Oracle:", oracleAddress);
+//  console.log("Questions on APP:", topicsList);
 
   return (
     <BrowserRouter>
@@ -94,7 +135,7 @@ function App() {
         <Route exact path="/" element={<ViewList questionList={topicsList} />} />
         <Route
           path="/Add"
-          element={<Add questionList={topicsList} addQuestion={handleAddTopic} signer={signerAddress}/>}
+          element={<Add questionList={topicsList} addQuestion={handleAddTopic} signerAddress={signerAddress}/>}
         />
         <Route
           path="/View"

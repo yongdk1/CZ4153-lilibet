@@ -21,29 +21,31 @@ function BetOption(props) {
   const handleChange = (evt) => {
     setBetAmount(evt.target.value);
   };
-
+  // [{side: 'biden', amount: BigNumber}, {side: 'trump', amount: BigNumber}]
   return (
     <div className="topic-item">
       <form onSubmit={() => handleSubmitBet()}>
         <div className="bet-container">
           <label className="bet-item">
-            Amount to bet:
+            Amount to bet (Wei):
             <input type="text" onChange={(event) => handleChange(event)} />
           </label>
           <div className="button-container">
             <button
               className="bet-button"
               type="submit"
-              onClick={() => setBetSide(props.topic.outcomes[0])}
+              onClick={() => setBetSide(props.topic[0].side)}
             >
-              Bet on {props.topic.outcomes[0]}
+              Bet on {props.topic[0].side}
+              <br></br>Current Pool:  {props.topic[0].amount.toNumber()}
             </button>
             <button
               className="bet-button"
               type="submit"
-              onClick={() => setBetSide(props.topic.outcomes[1])}
+              onClick={() => setBetSide(props.topic[1].side)}
             >
-              Bet on {props.topic.outcomes[1]}
+              Bet on {props.topic[1].side}
+              <br></br>Current Pool:  {props.topic[1].amount.toNumber()}
             </button>
           </div>
         </div>
@@ -70,50 +72,61 @@ function ClaimBetComponent(props) {
 function ViewList(props) {
   const questionList = props.questionList;
 
-  // console.log("Questions on VIEW:", questionList);
+ console.log("Questions on VIEW:", questionList);
 
   return (
     <div className="parent-container">
       <h2 className="addHeader">List of Topics currently:</h2>
       {/* <div className="topic-container"> */}
-      {questionList.map((question, i) => {
-        // console.log("WINNER:", question.winner);
-        // console.log();
+      {questionList.map((question,i) => {
+        console.log(question)
+        // const keys = Object.keys(question = Object.fromEntries(Object.entries(question).filter(([k, v]) => isNaN(k))));
+        const keys = Object.keys(question)
         return (
           <div className="view-item">
-            <div className="topic-item" key={i}>
-              {Object.keys(
-                (question = Object.fromEntries(
-                  Object.entries(question).filter(([k, v]) => isNaN(k))
-                ))
-              ).map((key, index) => {
-                // console.log("VIEW:", question);
-                var value = question[key];
+            <div className="topic-item" key = {i}>
+              {keys.filter(function(k) {
+                  if (k === "sides" || k === "id") {
+                    return false; // skip
+                  }
+                return true;
+              }).map((key, index) => {
+
+                console.log(key)
+                var value = question[key]
+                console.log(value)
                 if (key === "endDate") {
-                  var endDate = new Date(0);
-                  endDate.setUTCSeconds(value.toNumber());
-                  value = endDate.toString();
-                  key = "Betting Close Date";
-                } else if (key === "minBet") {
-                  value = value.toNumber() + " Wei";
-                  key = "Minimum Bet";
-                } else if (key === "comm") {
-                  value = value.toNumber() + "%";
-                  key = "Commission";
-                } else if (key === "outcomes") {
-                  value = value.join(", ");
-                  key = "Betting Outcomes";
-                } else if (key === "name") {
-                  key = "Topic Name";
-                } else if (key === "desc") {
-                  key = "Topic Description";
-                } else if (key === "finished") {
-                  if (value == false) value = "No";
-                  else value = "Yes";
-                  key = "Has Betting Ended?";
-                } else if (key === "result") {
-                  if (value == false) value = "NA";
-                  key = "Final Result";
+                  var endDate = new Date(0)
+                  endDate.setUTCSeconds(value)
+                  value = endDate.toString()
+                  key = "Betting Close Date"
+                }
+                else if(key === "minBet") {
+                  value = value + " Wei"
+                  key = "Minimum Bet"
+                }
+                else if(key === "comm") {
+                  value = value + "%"
+                  key = "Commission"
+                }
+                else if(key === "outcomes") {
+                  value = value.join(', ');
+                  key = "Betting Outcomes"
+                }
+                else if(key === "name") {
+                  key = "Topic Name"
+                }
+                else if(key === "desc") {
+                  key = "Topic Description"
+                }
+                else if(key === "finished") {
+                  if (value === false) value = 'No'
+                  else value = 'Yes'
+                  key = "Has Betting Ended?"
+                }
+                else if(key === "result") {
+                  if (value === '') value = 'NA'
+                  key = "Final Result"
                 }
                 return (
                   <p key={index}>
@@ -123,7 +136,7 @@ function ViewList(props) {
               })}
             </div>
             {!question.finished ? (
-              <BetOption topic={question} />
+              <BetOption topic={question.sides} />
               
             ) : (
               <div className="winner-container">
@@ -132,6 +145,7 @@ function ViewList(props) {
                 <ClaimBetComponent topic = {question} />
               </div>
             )}
+            {/* <BetOption topic={question.sides} /> */}
           </div>
         );
       })}
