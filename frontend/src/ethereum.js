@@ -10,14 +10,14 @@ const getBlockchain = () =>
         const signer = provider.getSigner();
         const signerAddress = await signer.getAddress();
 
-        // added oracle info
-        const oracle = signerAddress
-
         const predictionMarket = new Contract(
           PredictionMarket.networks[window.ethereum.networkVersion].address,
           PredictionMarket.abi,
           signer
         );
+
+        // added oracle info
+        const oracle = await predictionMarket.getOracle();
 
         resolve({signerAddress, predictionMarket, oracle});
       }
