@@ -11,7 +11,7 @@ function Arbitrator(props) {
       event.preventDefault();
       // console.log("HELLLO:", winner);
       props.disableBetting(question.id, winner);
-      props.reportResult(event);
+      props.reportResult(question.id, winner);
       alert("You have selected a winner for: " + question.name);
     }
   }

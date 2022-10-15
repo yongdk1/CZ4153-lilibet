@@ -113,14 +113,13 @@ function App() {
     }
   };
 
-  const handleReportResult = async (evt) => {
-    console.log(evt)
+  const handleReportResult = async (uuid, winner) => {
 
     // reportResult(string memory topicID, string memory result
     try {
       await predictionMarket.reportResult(
-        '6bba15ab-8667-47e2-98b4-643191bfc6a3',
-        'biden',
+        uuid,
+        winner,
         {from: signerAddress}
       );
 
