@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 function Arbitrator(props) {
   const [winner, setWinner] = useState(null);
 
   // add to blockchain
   function handleSubmit(event, question) {
-    if (winner != question["outcomes"][0] && winner != question["outcomes"][1] ) {
+    if (winner !== question["outcomes"][0] && winner !== question["outcomes"][1] ) {
       alert("Please select a valid result for: " + question.name);
     } else {
       event.preventDefault();
@@ -15,19 +15,20 @@ function Arbitrator(props) {
       alert("You have selected a winner for: " + question.name);
     }
   }
-
+  const topicList = props.topicList;
+  
+  console.log(topicList);
   console.log("WINNER", winner);
 
-  const questionList = props.questionList;
   return (
     <div className="parent-container">
       <h2 className="addHeader">
         List of topics that you can resolve currently:
       </h2>
-      {questionList.map((question, i) => {
+      {topicList.map((question, i) => {
         return (
           <div>
-            {!question.finished && question.judge == props.signer? (
+            {!question.finished && question.judge === props.signer? (
               <div className="abr-item">
                 <div className="font-12">{question["name"]}</div>
                 <div>

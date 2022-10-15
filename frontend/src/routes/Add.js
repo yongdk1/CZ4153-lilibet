@@ -27,10 +27,8 @@ class MyForm extends React.Component {
 
   handleSubmit(event){
     event.preventDefault();
-    // console.log(this.deadline)
-    // this.setState({deadline: Math.round(new Date(this.deadline).getTime()/1000)})
     const u_id = uuidv4();
-    this.setState({ uuid: u_id }, () => this.props.addQuestion(this.state));
+    this.setState({ uuid: u_id }, () => this.props.addTopic(this.state));
     alert("You have Submitted a new Topic!");
   }
 
@@ -116,8 +114,8 @@ class MyForm extends React.Component {
 }
 
 function Add(props) {
-  console.log("Questions on ADD:", props.questionList);
-  const questionList = props.questionList;
+  console.log("Questions on ADD:", props.topicList);
+  const topicList = props.topicList;
   return (
     <div className="parent-container">
       <h2 className="addHeader">Add A Topic</h2>
@@ -125,12 +123,12 @@ function Add(props) {
         <div className="table-cell">
           <h4>General Info:</h4>
           <p>Your address: {props.signerAddress}</p>
-          <p>Number of Topics: {questionList.length}</p>
+          <p>Number of Topics: {topicList.length}</p>
           <p>Your info:</p>
           <p>Contract Owner: </p>
           <p>Block Number:</p>
         </div>
-        <MyForm className="table-cell" addQuestion={props.addQuestion} signerAddress={props.signerAddress}/>
+        <MyForm className="table-cell" addTopic={props.addTopic} signerAddress={props.signerAddress}/>
       </div>
     </div>
   );

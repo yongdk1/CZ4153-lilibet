@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 
 function BetOption(props) {
-  const [betAmount, setBetAmount] = useState(0);
-  const [betSide, setBetSide] = useState(0);
+  const [betAmount, setBetAmount] = useState(props.topic.minBet);
+  const [betSide, setBetSide] = useState("");
 
-  // placeBet (blockchain, predictionMarket)
-  function handleSubmitBet() {
+  const handleSubmitBet = async(e) => {
+    e.preventDefault()
     console.log("Bet amount:", betAmount);
     console.log("Bet Side:", betSide);
+
+    await props.placeBet(props.topic.id, betSide, betAmount)
+
     alert(
       "You have placed bet amount of " +
         betAmount +
@@ -21,31 +24,38 @@ function BetOption(props) {
   const handleChange = (evt) => {
     setBetAmount(evt.target.value);
   };
+  
   // [{side: 'biden', amount: BigNumber}, {side: 'trump', amount: BigNumber}]
   return (
     <div className="topic-item">
-      <form onSubmit={() => handleSubmitBet()}>
+      <form onSubmit={(e) => handleSubmitBet(e)}>
         <div className="bet-container">
           <label className="bet-item">
             Amount to bet (Wei):
-            <input type="text" onChange={(event) => handleChange(event)} />
+            <input 
+              type="number"
+              value={betAmount}
+              min={props.topic.minBet}
+              onChange={(event) => handleChange(event)} 
+            />
           </label>
+          <p>Actual amount bet (after fees): {betAmount - 100} Wei</p>
           <div className="button-container">
             <button
               className="bet-button"
               type="submit"
-              onClick={() => setBetSide(props.topic[0].side)}
+              onClick={() => setBetSide(props.topic.sides[0].side)}
             >
-              Bet on {props.topic[0].side}
-              <br></br>Current Pool:  {props.topic[0].amount.toNumber()}
+              Bet on {props.topic.sides[0].side}
+              <br></br>Current Pool:  {props.topic.sides[0].amount.toNumber()}
             </button>
             <button
               className="bet-button"
               type="submit"
-              onClick={() => setBetSide(props.topic[1].side)}
+              onClick={() => setBetSide(props.topic.sides[1].side)} 
             >
-              Bet on {props.topic[1].side}
-              <br></br>Current Pool:  {props.topic[1].amount.toNumber()}
+              Bet on {props.topic.sides[1].side}
+              <br></br>Current Pool:  {props.topic.sides[1].amount.toNumber()}
             </button>
           </div>
         </div>
@@ -60,18 +70,18 @@ function ClaimBetComponent(props){
 
 function ViewList(props) {
 
-  const questionList = props.questionList;
+  const topicList = props.topicList;
 
- console.log("Questions on VIEW:", questionList);
+  console.log("Questions on VIEW:", topicList);
 
   return (
     <div className="parent-container">
       <h2 className="addHeader">List of Topics currently:</h2>
       {/* <div className="topic-container"> */}
-      {questionList.map((question,i) => {
-        console.log(question)
-        // const keys = Object.keys(question = Object.fromEntries(Object.entries(question).filter(([k, v]) => isNaN(k))));
-        const keys = Object.keys(question)
+      {topicList.map((topic,i) => {
+        console.log(topic)
+        // const keys = Object.keys(topic = Object.fromEntries(Object.entries(topic).filter(([k, v]) => isNaN(k))));
+        const keys = Object.keys(topic)
         return (
           <div className="view-item">
             <div className="topic-item" key = {i}>
@@ -81,10 +91,7 @@ function ViewList(props) {
                   }
                 return true;
               }).map((key, index) => {
-
-                console.log(key)
-                var value = question[key]
-                console.log(value)
+                var value = topic[key]
                 if (key === "endDate") {
                   var endDate = new Date(0)
                   endDate.setUTCSeconds(value)
@@ -126,12 +133,12 @@ function ViewList(props) {
               })}
             </div>
 
-            {!question.finished ? (
-              <BetOption topic={question.sides} />
+            {!topic.finished ? (
+              <BetOption topic={topic} placeBet={props.placeBet}/>
             ) : (
               <div className="winner-container">
                 WINNER: &nbsp;
-                <span className="winner-text">{question.result}</span>
+                <span className="winner-text">{topic.result}</span>
               </div>
             )}
 

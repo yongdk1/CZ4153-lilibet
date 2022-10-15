@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Original from "./routes/Default.js";
 import Add from "./routes/Add.js";
 import ViewList from "./routes/View.js";
 import Arbitrator from "./routes/Arbitrator.js";
 import NavBar from "./NavBar.js";
-import * as constants from "./constants.js";
 import getBlockchain from "./ethereum.js";
 import "./App.css";
 
 function App() {
   const [predictionMarket, setPredictionMarket] = useState(undefined);
-  const [QuestionList, setQuestion] = useState(constants.questionsSample);
-  const [partialTopicsList, setPartialTopics] = useState(undefined)
   const [topicsList, setTopics] = useState(undefined)
   const [signerAddress, setSignerAddress] = useState(undefined)
   const [oracleAddress, setOracleAddress] = useState(undefined)
@@ -21,10 +17,10 @@ function App() {
     const init = async () => {
       const { signerAddress, predictionMarket, oracle } = await getBlockchain();
       const topics = await predictionMarket.getTopics();
+      
       setSignerAddress(signerAddress);
       setOracleAddress(oracle);
       setPredictionMarket(predictionMarket);
-      setPartialTopics(topics);
 
       var topicPool = await predictionMarket.getTopicPool();
       // remove duplicated numerical keys due to await getter
@@ -61,25 +57,9 @@ function App() {
     return "Loading...";
   }
 
-
-
-  function disableBetting(uuid, winner) {
-
-    if (topicsList.find((x) => x.id === uuid)) {
-      let newTopicsList =[...topicsList];
-      let question = {...topicsList.find((x) => x.id === uuid)};
-      question.finished = true;
-      question.result = winner;
-      const id = topicsList.findIndex((x) => x.id === uuid);
-      newTopicsList[id] = question;
-      setTopics(newTopicsList);
-    }
-  }
-
-
-  // createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, 
-  // uint256 minimum, uint256 commission, string memory description, address _arbitrator)
   const handleAddTopic = async (evt) => {
+    // createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, 
+    // uint256 minimum, uint256 commission, string memory description, address _arbitrator)
     console.log(evt)
 
     // convert to epoch time
@@ -91,7 +71,6 @@ function App() {
       arbitrator = oracleAddress;
     }
     
-
     try {
       await predictionMarket.createTopic(
         evt.uuid,
@@ -114,7 +93,6 @@ function App() {
   };
 
   const handleReportResult = async (uuid, winner) => {
-
     // reportResult(string memory topicID, string memory result
     try {
       await predictionMarket.reportResult(
@@ -131,31 +109,52 @@ function App() {
     }
   };
 
-  const handleAddQuestion = async (evt) => {
-    setQuestion([...QuestionList, evt]);
-  };
+  function disableBetting(uuid, winner) {
+    if (topicsList.find((x) => x.id === uuid)) {
+      let newTopicsList =[...topicsList];
+      let question = {...topicsList.find((x) => x.id === uuid)};
+      question.finished = true;
+      question.result = winner;
+      const id = topicsList.findIndex((x) => x.id === uuid);
+      newTopicsList[id] = question;
+      setTopics(newTopicsList);
+    }
+  }
 
+  const handlePlaceBet = async(uuid, side, amount) => {
+    // function placeBet(string memory topicID, string memory side) public payable    
+    try {
+      await predictionMarket.placeBet(
+        uuid,
+        side,
+        {from: signerAddress, value: amount}
+      );
+    } catch (err) {
+      console.log(err);
+      alert("Unable to place bet!");
+    }
+  };
 
   console.log("Signer:", signerAddress);
   console.log("Oracle:", oracleAddress);
-//  console.log("Questions on APP:", topicsList);
+  console.log("Questions on APP:", topicsList);
 
   return (
     <BrowserRouter>
       <NavBar />
       <Routes>
-        <Route exact path="/" element={<ViewList questionList={topicsList} />} />
+        <Route exact path="/" element={<ViewList topicList={topicsList} placeBet={handlePlaceBet}/>} />
         <Route
           path="/Add"
-          element={<Add questionList={topicsList} addQuestion={handleAddTopic} signerAddress={signerAddress}/>}
+          element={<Add topicList={topicsList} addTopic={handleAddTopic} signerAddress={signerAddress}/>}
         />
         <Route
           path="/View"
-          element={<ViewList questionList={topicsList} />}
+          element={<ViewList topicList={topicsList} placeBet={handlePlaceBet}/>}
         />
         <Route
           path="/Arbitrator"
-          element={<Arbitrator questionList={partialTopicsList} reportResult={handleReportResult} disableBetting={disableBetting} signer={signerAddress}/>}
+          element={<Arbitrator topicList={topicsList} reportResult={handleReportResult} disableBetting={disableBetting} signer={signerAddress}/>}
         />
       </Routes>
     </BrowserRouter>

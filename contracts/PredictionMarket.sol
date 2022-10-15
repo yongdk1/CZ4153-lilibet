@@ -158,9 +158,12 @@ contract PredictionMarket{
         uint256 bet = msg.value;
 
         require(
-        bytes(side).length > 0 
-        && msg.value >= topicMinimum[topicID],
-        "Attempted to place invalid bet, check amounts and results");
+        bytes(side).length > 0,
+        "Attempted to place invalid bet, check result");
+
+        require(
+        msg.value >= topicMinimum[topicID],
+        "Attempted to place invalid bet, check amount");
 
         bet -= fixedCommission;
 
