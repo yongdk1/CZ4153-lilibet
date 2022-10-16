@@ -11279,7 +11279,6 @@
             "parameters": [
               {
                 "name": "headStart",
-<<<<<<< HEAD
                 "nodeType": "YulTypedName",
                 "src": "19475:9:2",
                 "type": ""
@@ -11287,15 +11286,6 @@
               {
                 "name": "dataEnd",
                 "nodeType": "YulTypedName",
-=======
-                "nodeType": "YulTypedName",
-                "src": "19475:9:2",
-                "type": ""
-              },
-              {
-                "name": "dataEnd",
-                "nodeType": "YulTypedName",
->>>>>>> arb-blockchain
                 "src": "19486:7:2",
                 "type": ""
               }
