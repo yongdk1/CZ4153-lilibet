@@ -10,25 +10,29 @@ import UserBets from "./routes/UserBets.js";
 
 function App() {
   const [predictionMarket, setPredictionMarket] = useState(undefined);
-  const [topicsList, setTopics] = useState(undefined)
-  const [signerAddress, setSignerAddress] = useState(undefined)
-  const [oracleAddress, setOracleAddress] = useState(undefined)
+  const [topicsList, setTopics] = useState(undefined);
+  const [signerAddress, setSignerAddress] = useState(undefined);
+  const [oracleAddress, setOracleAddress] = useState(undefined);
 
   useEffect(() => {
     const init = async () => {
       const { signerAddress, predictionMarket, oracle } = await getBlockchain();
       const topics = await predictionMarket.getTopics();
-      
+
       setSignerAddress(signerAddress);
       setOracleAddress(oracle);
       setPredictionMarket(predictionMarket);
 
       var topicPool = await predictionMarket.getTopicPool();
       // remove duplicated numerical keys due to await getter
-      topicPool = topicPool.map(x => Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k))));
-      // combine topics and topic pool into and array of dictionaries 
-      var allTopics = topics.map(function(o, i) {
-        var side = topicPool.find(function(o1) {return o1.id === o.id;}).pools
+      topicPool = topicPool.map((x) =>
+        Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k)))
+      );
+      // combine topics and topic pool into and array of dictionaries
+      var allTopics = topics.map(function (o, i) {
+        var side = topicPool.find(function (o1) {
+          return o1.id === o.id;
+        }).pools;
         return {
           id: o.id,
           name: o.name,
@@ -41,14 +45,16 @@ function App() {
           finished: o.finished,
           result: o.result,
           // remove duplicated numerical keys due to await getter
-          sides: side.map(x => Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k))))
-        }
+          sides: side.map((x) =>
+            Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k)))
+          ),
+        };
       });
-      
-      setTopics(allTopics)
-    }
+
+      setTopics(allTopics);
+    };
     init();
-  }, []); 
+  }, []);
 
   if (
     typeof predictionMarket === "undefined" ||
@@ -59,19 +65,19 @@ function App() {
   }
 
   const handleAddTopic = async (evt) => {
-    // createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, 
+    // createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline,
     // uint256 minimum, uint256 commission, string memory description, address _arbitrator)
-    console.log(evt)
+    console.log(evt);
 
     // convert to epoch time
-    const deadline =  Math.round(new Date(evt.deadline).getTime()/1000);
+    const deadline = Math.round(new Date(evt.deadline).getTime() / 1000);
 
     // set arbitrator address
     var arbitrator = signerAddress;
-    if (evt.arbitrator === 'Oracle'){
+    if (evt.arbitrator === "Oracle") {
       arbitrator = oracleAddress;
     }
-    
+
     try {
       await predictionMarket.createTopic(
         evt.uuid,
@@ -82,28 +88,45 @@ function App() {
         evt.commission,
         evt.description,
         arbitrator,
-        {from: signerAddress}
+        { from: signerAddress }
       );
 
       // window.location.href = "/View";
-      window.location.replace('/View');
+      window.location.replace("/View");
     } catch (err) {
       console.log(err);
       alert("Unable to add topic!");
     }
   };
 
+  const handleClaimBet = async (topicID) => {
+    try {
+      await predictionMarket.claimBet(topicID, { from: signerAddress });
+    } catch (err) {
+      console.log(err);
+      alert("Unable to claim bet!");
+    }
+  };
+
+  const getUserBets = async () => {
+    try {
+      await predictionMarket.getUserBets(signerAddress);
+
+    }catch (err){
+      console.log(err);
+      alert("Unable to retrieve user bets!");
+    }
+  }
+
   const handleReportResult = async (uuid, winner) => {
     // reportResult(string memory topicID, string memory result
     try {
-      await predictionMarket.reportResult(
-        uuid,
-        winner,
-        {from: signerAddress}
-      );
+      await predictionMarket.reportResult(uuid, winner, {
+        from: signerAddress,
+      });
 
       // window.location.href = "/View";
-      window.location.replace('/View');
+      window.location.replace("/View");
     } catch (err) {
       console.log(err);
       alert("Unable to submit result!");
@@ -112,8 +135,8 @@ function App() {
 
   function disableBetting(uuid, winner) {
     if (topicsList.find((x) => x.id === uuid)) {
-      let newTopicsList =[...topicsList];
-      let question = {...topicsList.find((x) => x.id === uuid)};
+      let newTopicsList = [...topicsList];
+      let question = { ...topicsList.find((x) => x.id === uuid) };
       question.finished = true;
       question.result = winner;
       const id = topicsList.findIndex((x) => x.id === uuid);
@@ -122,14 +145,13 @@ function App() {
     }
   }
 
-  const handlePlaceBet = async(uuid, side, amount) => {
-    // function placeBet(string memory topicID, string memory side) public payable    
+  const handlePlaceBet = async (uuid, side, amount) => {
+    // function placeBet(string memory topicID, string memory side) public payable
     try {
-      await predictionMarket.placeBet(
-        uuid,
-        side,
-        {from: signerAddress, value: amount}
-      );
+      await predictionMarket.placeBet(uuid, side, {
+        from: signerAddress,
+        value: amount,
+      });
     } catch (err) {
       console.log(err);
       alert("Unable to place bet!");
@@ -144,20 +166,44 @@ function App() {
     <BrowserRouter>
       <NavBar />
       <Routes>
-        <Route exact path="/" element={<ViewList topicList={topicsList} placeBet={handlePlaceBet}/>} />
+        <Route
+          exact
+          path="/"
+          element={
+            <ViewList topicList={topicsList} placeBet={handlePlaceBet} />
+          }
+        />
         <Route
           path="/Add"
-          element={<Add topicList={topicsList} addTopic={handleAddTopic} signerAddress={signerAddress}/>}
+          element={
+            <Add
+              topicList={topicsList}
+              addTopic={handleAddTopic}
+              signerAddress={signerAddress}
+            />
+          }
         />
         <Route
           path="/View"
-          element={<ViewList topicList={topicsList} placeBet={handlePlaceBet}/>}
+          element={
+            <ViewList topicList={topicsList} placeBet={handlePlaceBet} claimBet = {handleClaimBet}/>
+          }
         />
         <Route
           path="/Arbitrator"
-          element={<Arbitrator topicList={topicsList} reportResult={handleReportResult} disableBetting={disableBetting} signer={signerAddress}/>}
+          element={
+            <Arbitrator
+              topicList={topicsList}
+              reportResult={handleReportResult}
+              disableBetting={disableBetting}
+              signer={signerAddress}
+            />
+          }
         />
-        <Route path = "/UserBets" element={<UserBets questionList={topicsList} />}/>
+        <Route
+          path="/UserBets"
+          element={<UserBets userBets = {getUserBets} />}
+        />
       </Routes>
     </BrowserRouter>
   );
