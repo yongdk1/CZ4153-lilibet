@@ -12,6 +12,10 @@ contract PredictionMarket{
         oracle = _oracle;
     }
 
+    function getOracle() public view returns (address){
+        return oracle;
+    }
+
     // Prediction Market Contract Creator reward
     // There's a 10 wei fixed commission transferred to the contract's creator for every placed bet
     uint256 constant fixedCommission = 100;
@@ -154,9 +158,12 @@ contract PredictionMarket{
         uint256 bet = msg.value;
 
         require(
-        bytes(side).length > 0 
-        && msg.value >= topicMinimum[topicID],
-        "Attempted to place invalid bet, check amounts and results");
+        bytes(side).length > 0,
+        "Attempted to place invalid bet, check result");
+
+        require(
+        msg.value >= topicMinimum[topicID],
+        "Attempted to place invalid bet, check amount");
 
         bet -= fixedCommission;
 
