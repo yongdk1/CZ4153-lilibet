@@ -92,31 +92,31 @@ function App() {
         arbitrator,
         { from: signerAddress }
       );
+
+      setTopics([...topicsList, 
+        {
+          id: evt.uuid,
+          name: evt.topic,
+          desc: evt.description,
+          outcomes: [evt.side1, evt.side2],
+          endDate: deadline,
+          minBet: evt.minimumBet,
+          comm: evt.commission,
+          judge: arbitrator,
+          finished: false,
+          result: "",
+          sides: [
+            {side: evt.side1, amount: ethers.BigNumber.from("0")},
+            {side: evt.side2, amount: ethers.BigNumber.from("0")}
+          ]
+        }
+      ]); 
+      
+      navigate('/view');
     } catch (err) {
       console.log(err);
       alert("Unable to add topic!");
     }
-
-    setTopics([...topicsList, 
-      {
-        id: evt.uuid,
-        name: evt.topic,
-        desc: evt.description,
-        outcomes: [evt.side1, evt.side2],
-        endDate: deadline,
-        minBet: evt.minimumBet,
-        comm: evt.commission,
-        judge: arbitrator,
-        finished: false,
-        result: "",
-        sides: [
-          {side: evt.side1, amount: ethers.BigNumber.from("0")},
-          {side: evt.side2, amount: ethers.BigNumber.from("0")}
-        ]
-      }
-    ]); 
-    
-    navigate('/view');
   };
 
   const handleClaimBet = async (topicID) => {
@@ -144,25 +144,25 @@ function App() {
       await predictionMarket.reportResult(uuid, winner, {
         from: signerAddress,
       });
+
+      const newState = topicsList.map(topic => {
+        if (topic.id === uuid) {
+          return {...topic, 
+            finished: true, 
+            result: winner
+          };
+        }
+  
+        return topic;
+      });
+  
+      setTopics(newState);
+  
+      navigate('/view');
     } catch (err) {
       console.log(err);
       alert("Unable to submit result!");
     };
-
-    const newState = topicsList.map(topic => {
-      if (topic.id === uuid) {
-        return {...topic, 
-          finished: true, 
-          result: winner
-        };
-      }
-
-      return topic;
-    });
-
-    setTopics(newState);
-
-    navigate('/view');
   };
 
   function disableBetting(uuid, winner) {
