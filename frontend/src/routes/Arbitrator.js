@@ -9,7 +9,6 @@ function Arbitrator(props) {
       alert("Please select a valid result for: " + question.name);
     } else {
       event.preventDefault();
-      // console.log("HELLLO:", winner);
       props.disableBetting(question.id, winner);
       props.reportResult(question.id, winner);
       alert("You have selected a winner for: " + question.name);
