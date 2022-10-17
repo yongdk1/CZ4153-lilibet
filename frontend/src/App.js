@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Add from "./routes/Add.js";
 import ViewList from "./routes/View.js";
 import Arbitrator from "./routes/Arbitrator.js";
@@ -7,8 +7,10 @@ import NavBar from "./NavBar.js";
 import getBlockchain from "./ethereum.js";
 import "./App.css";
 import UserBets from "./routes/UserBets.js";
+import { ethers } from "ethers";
 
 function App() {
+  const navigate = useNavigate()
   const [predictionMarket, setPredictionMarket] = useState(undefined);
   const [topicsList, setTopics] = useState(undefined);
   const [signerAddress, setSignerAddress] = useState(undefined);
@@ -90,13 +92,31 @@ function App() {
         arbitrator,
         { from: signerAddress }
       );
-
-      // window.location.href = "/View";
-      window.location.replace("/View");
     } catch (err) {
       console.log(err);
       alert("Unable to add topic!");
     }
+
+    setTopics([...topicsList, 
+      {
+        id: evt.uuid,
+        name: evt.topic,
+        desc: evt.description,
+        outcomes: [evt.side1, evt.side2],
+        endDate: deadline,
+        minBet: evt.minimumBet,
+        comm: evt.commission,
+        judge: arbitrator,
+        finished: false,
+        result: "",
+        sides: [
+          {side: evt.side1, amount: ethers.BigNumber.from("0")},
+          {side: evt.side2, amount: ethers.BigNumber.from("0")}
+        ]
+      }
+    ]); 
+    
+    navigate('/view');
   };
 
   const handleClaimBet = async (topicID) => {
@@ -124,13 +144,25 @@ function App() {
       await predictionMarket.reportResult(uuid, winner, {
         from: signerAddress,
       });
-
-      // window.location.href = "/View";
-      window.location.replace("/View");
     } catch (err) {
       console.log(err);
       alert("Unable to submit result!");
-    }
+    };
+
+    const newState = topicsList.map(topic => {
+      if (topic.id === uuid) {
+        return {...topic, 
+          finished: true, 
+          result: winner
+        };
+      }
+
+      return topic;
+    });
+
+    setTopics(newState);
+
+    navigate('/view');
   };
 
   function disableBetting(uuid, winner) {
@@ -163,7 +195,7 @@ function App() {
   console.log("Questions on APP:", topicsList);
 
   return (
-    <BrowserRouter>
+    <div>
       <NavBar />
       <Routes>
         <Route
@@ -205,7 +237,7 @@ function App() {
           element={<UserBets userBets = {getUserBets} />}
         />
       </Routes>
-    </BrowserRouter>
+    </div>
   );
 }
 
