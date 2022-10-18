@@ -47,7 +47,7 @@ function BetOption(props) {
               onClick={() => setBetSide(props.topic.sides[0].side)}
             >
               Bet on {props.topic.sides[0].side}
-              <br></br>Current Pool: {props.topic.sides[0].amount.toNumber()}
+              <br></br>Current Pool: {props.topic.sides[0].amount.toString()}
             </button>
             <button
               className="bet-button"
@@ -55,7 +55,7 @@ function BetOption(props) {
               onClick={() => setBetSide(props.topic.sides[1].side)}
             >
               Bet on {props.topic.sides[1].side}
-              <br></br>Current Pool: {props.topic.sides[1].amount.toNumber()}
+              <br></br>Current Pool: {props.topic.sides[1].amount.toString()}
             </button>
           </div>
         </div>
