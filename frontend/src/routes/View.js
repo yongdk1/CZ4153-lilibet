@@ -75,7 +75,7 @@ function ClaimBetComponent(props) {
 
   return (
     <div className="claim-container">
-      {claimed == false ? (
+      {claimed === false ? (
         <button onClick={handleClick} className="claim-button">
           CLAIM YOUR WINNINGS
         </button>
