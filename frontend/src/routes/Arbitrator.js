@@ -27,7 +27,8 @@ function Arbitrator(props) {
       {topicList.map((question, i) => {
         return (
           <div>
-            {!question.finished && question.judge === props.signer? (
+            {!question.finished && question.judge === props.signer 
+            && question.endDate < Date.now()/1000 && question.resolutionDate >= Date.now()/1000? (
               <div className="abr-item">
                 <div className="font-12">{question["name"]}</div>
                 <div>

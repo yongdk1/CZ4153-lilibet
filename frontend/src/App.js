@@ -44,7 +44,10 @@ function App() {
           minBet: o.minBet.toNumber(),
           comm: o.comm.toNumber(),
           judge: o.judge,
-          finished: o.finished,
+          // betting closed
+          bettingclosed: o.endDate.toNumber() < Date.now()/1000,
+          // arbitrator reported 
+          reported: o.finished,
           result: o.result,
           // remove duplicated numerical keys due to await getter
           sides: side.map((x) =>
