@@ -39,6 +39,8 @@ function App() {
           desc: o.desc,
           outcomes: o.outcomes,
           endDate: o.endDate.toNumber(),
+          // add 30 days
+          resolutionDate: o.endDate.toNumber() + 2628288,
           minBet: o.minBet.toNumber(),
           comm: o.comm.toNumber(),
           judge: o.judge,

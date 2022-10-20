@@ -114,7 +114,14 @@ function ViewList(props) {
                     endDate.setUTCSeconds(value);
                     value = endDate.toString();
                     key = "Betting Close Date";
-                  } else if (key === "minBet") {
+                  } 
+                  else if (key === "resolutionDate"){
+                    var resolutionDate = new Date(0);
+                    resolutionDate.setUTCSeconds(value);
+                    value = resolutionDate.toString();
+                    key = "Arbitrator Resolution Date";
+                  }
+                  else if (key === "minBet") {
                     value = value + " Wei";
                     key = "Minimum Bet";
                   } else if (key === "comm") {
