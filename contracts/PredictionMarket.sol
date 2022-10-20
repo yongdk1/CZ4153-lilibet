@@ -98,7 +98,8 @@ contract PredictionMarket{
         require(
             bytes(topicID).length > 0
             && sides.length > 1
-            && deadline > block.timestamp // topic can't be set in the past
+            // comment out deadline validation so that we can create sample topics
+            // && deadline > block.timestamp // topic can't be set in the past
             // && deadline <= schedule // Users should only be able to place bets before it is actually executed
             // && schedule < block.timestamp + scheduleThreshold
             && commission <= 20 // maximum comission is 20%
