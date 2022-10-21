@@ -112,15 +112,6 @@ function App() {
     }
   };
 
-  // const getUserBets = async () => {
-  //   try {
-  //     await predictionMarket.getUserBets(signerAddress);
-
-  //   }catch (err){
-  //     console.log(err);
-  //     alert("Unable to retrieve user bets!");
-  //   }
-  // }
 
   const handleReportResult = async (uuid, winner) => {
     // reportResult(string memory topicID, string memory result
