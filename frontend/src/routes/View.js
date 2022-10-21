@@ -50,6 +50,11 @@ function BetOption(props) {
   // [{side: 'biden', amount: BigNumber}, {side: 'trump', amount: BigNumber}]
   return (
     <div className="topic-item">
+      {props.topic.endDate < Date.now()/1000? (
+            <div className="closedbet-container">
+              Betting Closed
+          </div>
+            ) : (
       <form onSubmit={(e) => handleSubmitBet(e)}>
         <div className="bet-container">
           <label className="bet-item">
@@ -121,6 +126,7 @@ function BetOption(props) {
           </div>
         </div>
       </form>
+            )}
     </div>
   );
 }
@@ -175,7 +181,14 @@ function ViewList(props) {
                     endDate.setUTCSeconds(value);
                     value = endDate.toString();
                     key = "Betting Close Date";
-                  } else if (key === "minBet") {
+                  } 
+                  else if (key === "resolutionDate"){
+                    var resolutionDate = new Date(0);
+                    resolutionDate.setUTCSeconds(value);
+                    value = resolutionDate.toString();
+                    key = "Arbitrator Resolution Date";
+                  }
+                  else if (key === "minBet") {
                     value = value + " Wei";
                     key = "Minimum Bet";
                   } else if (key === "comm") {
@@ -188,10 +201,14 @@ function ViewList(props) {
                     key = "Topic Name";
                   } else if (key === "desc") {
                     key = "Topic Description";
-                  } else if (key === "finished") {
+                  } else if (key === "bettingclosed") {
                     if (value === false) value = "No";
                     else value = "Yes";
                     key = "Has Betting Ended?";
+                  } else if (key === "reported") {
+                    if (value === false) value = "No";
+                    else value = "Yes";
+                    key = "Has Arbitrator Reported?";
                   } else if (key === "result") {
                     if (value === "") value = "NA";
                     key = "Final Result";
@@ -204,8 +221,7 @@ function ViewList(props) {
                   );
                 })}
             </div>
-
-            {!topic.finished ? (
+            {!topic.reported ? (
               <BetOption topic={topic} placeBet={props.placeBet} />
             ) : (
               <div className="winner-container">

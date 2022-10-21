@@ -6,14 +6,45 @@ module.exports = async function (deployer, _network, addresses) {
   // await deployer.deploy(PredictionMarket);
   const predictionMarket = await PredictionMarket.deployed();
 
+  // topic with betting closed but not resolved yet
+  await predictionMarket.createTopic(
+    "ac420079-ad12-4ca5-868c-0aa07a14afb6", 
+    "NBA Playoff Final", 
+    ['Warriors','Celtics'],
+    1664582400, 
+    150, 
+    10,
+    "Who will win the NBA Playoff Finals?",
+    oracle,
+    {from: gambler1}
+  );
+
+  // topic with betting closed and resolution date over
+  await predictionMarket.createTopic(
+    "7c2ab882-c9d5-41e6-9ec5-26d8ae1299f6", 
+    "Most handsome male celebrity of 2022", 
+    ['Timothee Chalamet','Shawn Mendes'],
+    1661990400, 
+    101, 
+    10,
+    "By TC Candler",
+    oracle,
+    {from: gambler1}
+  );
+
+  await predictionMarket.reportResult(
+    "7c2ab882-c9d5-41e6-9ec5-26d8ae1299f6", 
+    "Shawn Mendes", {from: oracle}
+  );
+
   await predictionMarket.createTopic(
     "6bba15ab-8667-47e2-98b4-643191bfc6a3", 
     "US Election", 
-    ['biden','trump'],
-    1765217612, 
+    ['Biden','Trump'],
+    1765238400, 
     101, 
     10,
-    "description",
+    "Who will win the US Election?",
     oracle,
     {from: gambler1}
   );
@@ -22,7 +53,7 @@ module.exports = async function (deployer, _network, addresses) {
     "71bca7b6-0b72-4a0f-93e5-57db57c53e5c",
     "EPL",
     ["Liverpool", "Manchester City"],
-    1765217612,
+    1765238400,
     200,
     5,
     "Who will win the championship this season?",
