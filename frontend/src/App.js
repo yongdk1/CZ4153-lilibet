@@ -44,6 +44,8 @@ function App() {
           judge: o.judge,
           finished: o.finished,
           result: o.result,
+          userBet: o.userBet.toNumber(),
+          claimed: o.claimed,
           // remove duplicated numerical keys due to await getter
           sides: side.map((x) =>
             Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k)))
