@@ -13,15 +13,19 @@ function App() {
   const [topicsList, setTopics] = useState(undefined);
   const [signerAddress, setSignerAddress] = useState(undefined);
   const [oracleAddress, setOracleAddress] = useState(undefined);
+  // const [userBets, setUserBets] = useState(undefined);
+
 
   useEffect(() => {
     const init = async () => {
       const { signerAddress, predictionMarket, oracle } = await getBlockchain();
       const topics = await predictionMarket.getTopics();
+      // const userBets = await predictionMarket.getUserBets(signerAddress);
 
       setSignerAddress(signerAddress);
       setOracleAddress(oracle);
       setPredictionMarket(predictionMarket);
+      // setUserBets(userBets);
 
       var topicPool = await predictionMarket.getTopicPool();
       // remove duplicated numerical keys due to await getter
@@ -115,15 +119,6 @@ function App() {
     }
   };
 
-  const getUserBets = async () => {
-    try {
-      await predictionMarket.getUserBets(signerAddress);
-
-    }catch (err){
-      console.log(err);
-      alert("Unable to retrieve user bets!");
-    }
-  }
 
   const handleReportResult = async (uuid, winner) => {
     // reportResult(string memory topicID, string memory result
@@ -209,7 +204,7 @@ function App() {
         />
         <Route
           path="/UserBets"
-          element={<UserBets userBets = {getUserBets} />}
+          element={<UserBets predictionMarket = {predictionMarket} signer = {signerAddress}/>}
         />
       </Routes>
     </BrowserRouter>

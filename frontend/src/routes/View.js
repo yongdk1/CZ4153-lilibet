@@ -4,6 +4,28 @@ function BetOption(props) {
   const [betAmount, setBetAmount] = useState(props.topic.minBet);
   const [betSide, setBetSide] = useState("");
 
+  // const [sampleAmt1, setSampleAmt1] = useState(1000);
+  // const [sampleAmt2, setSampleAmt2] = useState(60);
+
+  console.log(props.topic.sides[0].amount.toNumber());
+
+  function dynamicWidth(side) {
+    var perc;
+
+    if (side == undefined || side == 0) {
+      perc = 0;
+    } else {
+      perc = Math.round(
+        (side /
+          (props.topic.sides[0].amount +
+            props.topic.sides[1].amount.toNumber())) *
+          100
+      );
+    }
+    console.log("perc", String(perc) + "%");
+    return String(perc) + "%";
+  }
+
   const handleSubmitBet = async (e) => {
     e.preventDefault();
     console.log("Bet amount:", betAmount);
@@ -44,24 +66,63 @@ function BetOption(props) {
               onChange={(event) => handleChange(event)}
             />
           </label>
-          <p>Actual amount bet (after fees): {betAmount - 100} Wei</p>
+          <p>Total bet amount (inclusive of fees): {Number(betAmount) + 100} Wei</p>
           <div className="button-container">
             <button
-              className="bet-button"
+              className="bet-button side-1"
               type="submit"
               onClick={() => setBetSide(props.topic.sides[0].side)}
             >
               Bet on {props.topic.sides[0].side}
-              <br></br>Current Pool: {props.topic.sides[0].amount.toString()}
             </button>
             <button
-              className="bet-button"
+              className="bet-button side-2"
               type="submit"
               onClick={() => setBetSide(props.topic.sides[1].side)}
             >
               Bet on {props.topic.sides[1].side}
-              <br></br>Current Pool: {props.topic.sides[1].amount.toString()}
             </button>
+          </div>
+          <div className="gap-above">Current Pool:</div>
+          <div class="row">
+            {/* <div class="label">Category Label</div> */}
+            <div class="bar-container">
+              <div
+                class="bar val-a"
+                style={{
+                  "flex-basis": dynamicWidth(
+                    props.topic.sides[0].amount.toNumber()
+                  ),
+                }}
+              >
+                <div className="align-left">
+                  {props.topic.sides[0].amount.toNumber() == 0 ? 0 : (
+                    <div>
+                      {props.topic.sides[0].side}&nbsp;
+                      {dynamicWidth(props.topic.sides[0].amount.toNumber())}
+                    </div>
+                  )}
+                </div>
+                {/* ) : null} */}
+              </div>
+              <div
+                class="bar val-b"
+                style={{
+                  "flex-basis": dynamicWidth(
+                    props.topic.sides[1].amount.toNumber()
+                  ),
+                }}
+              >
+                <div className="align-right">
+                {props.topic.sides[1].amount.toNumber() == 0 ? 0 : (
+                    <div>
+                      {props.topic.sides[1].side}&nbsp;
+                      {dynamicWidth(props.topic.sides[1].amount.toNumber())}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </form>
@@ -81,7 +142,7 @@ function ClaimBetComponent(props) {
 
   return (
     <div className="claim-container">
-      {claimed == false ? (
+      {claimed === false ? (
         <button onClick={handleClick} className="claim-button">
           CLAIM YOUR WINNINGS
         </button>
@@ -167,8 +228,6 @@ function ViewList(props) {
                 WINNER:
                 <span className="winner-text">{topic.result}</span>
                 <ClaimBetComponent topic={topic} claimBet={props.claimBet} />
-                {/* WINNER: &nbsp;
-                <span className="winner-text">{topic.result}</span> */}
               </div>
             )}
           </div>
