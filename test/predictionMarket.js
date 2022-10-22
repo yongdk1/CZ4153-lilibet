@@ -99,7 +99,7 @@ contract('PredictionMarket', addresses => {
     console.log('final balances');
     console.log(balances4);
   
-  const topicsx = (await predictionMarket.getTopics());
+  const topicsx = (await predictionMarket.getTopics({from: gambler2}));
   console.log(topicsx);
   topicsx.map((question,i) => {console.log(question)
     console.log(i)})

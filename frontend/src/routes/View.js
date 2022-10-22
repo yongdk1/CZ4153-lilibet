@@ -81,7 +81,7 @@ function ClaimBetComponent(props) {
 
   return (
     <div className="claim-container">
-      {claimed == false ? (
+      {claimed === false ? (
         <button onClick={handleClick} className="claim-button">
           CLAIM YOUR WINNINGS
         </button>
@@ -151,6 +151,8 @@ function ViewList(props) {
                   } else if (key === "result") {
                     if (value === "") value = "NA";
                     key = "Final Result";
+                  } else {
+                    return(<p></p>)
                   }
                   return (
                     <p key={index}>

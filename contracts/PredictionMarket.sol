@@ -105,8 +105,8 @@ contract PredictionMarket{
 
 
     // STATE FUNCTIONS
-    // Not enough to pay for it, the user should be informed and their funds returned
-    event LackingFunds(address indexed sender, uint256 funds);
+    // Event if there is not enough to pay for oracle: the user should be informed and their funds returned
+    // event LackingFunds(address indexed sender, uint256 funds);
 
     /* Contains all the information that can prove useful to people taking a look at the bet in the frontend. */
     event CreatedBet(string indexed _id, string description, string query);
@@ -145,7 +145,7 @@ contract PredictionMarket{
     }
 
     // The table in the frontend representing each topic's pool is populated according to these events.
-    event PlacedBets(address indexed user, string indexed _id, string id, string side);
+    event PlacedBet(address indexed user, string indexed _id, string id, string side);
     
     // only allow user to bet on 1 topic and 1 side each time
     function placeBet(string memory topicID, string memory side) public payable {
@@ -180,7 +180,7 @@ contract PredictionMarket{
         (bool success, ) = contractCreator.call{value: fixedCommission}("");
         require(success, "Failed to transfer fixed commission to contract creator.");
 
-        emit PlacedBets(msg.sender, topicID, topicID, side);
+        emit PlacedBet(msg.sender, topicID, topicID, side);
     }
 
     // Emit result
