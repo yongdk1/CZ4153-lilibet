@@ -39,10 +39,15 @@ function App() {
           desc: o.desc,
           outcomes: o.outcomes,
           endDate: o.endDate.toNumber(),
+          // add 30 days
+          resolutionDate: o.endDate.toNumber() + 2628288,
           minBet: o.minBet.toNumber(),
           comm: o.comm.toNumber(),
           judge: o.judge,
-          finished: o.finished,
+          // betting closed
+          bettingclosed: o.endDate.toNumber() < Date.now()/1000,
+          // arbitrator reported 
+          reported: o.finished,
           result: o.result,
           userBet: o.userBet.toNumber(),
           claimed: o.claimed,

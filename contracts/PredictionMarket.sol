@@ -115,7 +115,8 @@ contract PredictionMarket{
         require(
             bytes(topicID).length > 0
             && sides.length > 1
-            && deadline > block.timestamp // topic can't be set in the past
+            // comment out deadline validation so that we can create sample topics
+            // && deadline > block.timestamp // topic can't be set in the past
             && commission <= 20 // maximum comission is 20%
             && minimum >= minimumBet
             && !createdTopics[topicID], // Can't have duplicate topic ids
