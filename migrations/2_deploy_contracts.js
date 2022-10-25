@@ -60,7 +60,8 @@ module.exports = async function (deployer, _network, addresses) {
 
   await predictionMarket.reportResult(
     "7c2ab882-c9d5-41e6-9ec5-26d8ae1299f6", 
-    "Shawn Mendes", {from: oracle}
+    "Shawn Mendes", 
+    {from: oracle}
   );
 
   await predictionMarket.createTopic(
@@ -86,4 +87,10 @@ module.exports = async function (deployer, _network, addresses) {
     oracle,
     {from: gambler2}
   )
+
+  await predictionMarket.placeBet(
+    "6bba15ab-8667-47e2-98b4-643191bfc6a3", 
+    "biden", 
+    {from: gambler3, value: web3.utils.toWei('5', 'ether')}
+  );
 };
