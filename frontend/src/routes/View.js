@@ -60,7 +60,7 @@ function BetOption(props) {
   };
 
   const handleChange = (evt) => {
-    setBetAmount(evt.target.value);
+    setBetAmount(evt.target.value + 100);
   };
 
   return (
@@ -78,7 +78,7 @@ function BetOption(props) {
               Amount to bet (Wei):
               <input
                 type="number"
-                value={betAmount + 100}
+                value={betAmount}
                 min={props.topic.minBet}
                 onChange={(event) => handleChange(event)}
               />
