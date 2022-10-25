@@ -64,8 +64,8 @@ function BetOption(props) {
     <div className="topic-item">
       {props.topic.endDate < Date.now() / 1000 ? (
         <div className="closedbet-container">
-          <br></br>
-          <br></br>
+          {/* <br></br>
+          <br></br> */}
           Betting Closed
         </div>
       ) : (
