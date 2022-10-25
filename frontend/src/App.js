@@ -73,7 +73,7 @@ function App() {
     typeof predictionMarket === "undefined" ||
     typeof topicsList === "undefined" ||
     typeof signerAddress === "undefined" ||
-    typeof userBets === "undefined"
+    typeof claimedBets === "undefined"
   ) {
     return "Loading...";
   }
