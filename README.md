@@ -6,11 +6,17 @@ Prediction Market utilising Ethereum, Truffle, and ReactJS
 
 A Platform for users to create and participate in prediction markets. 
 
+## Dependencies
+Ensure npm is installed
+
+Run `npm install truffle` to install truffle
+
 ## Quick Start
 Solidity `0.8.17` is used.
 
-`truffle compile`
+To compile contracts, run `truffle compile`
 
+To deploy, run
 `truffle develop` > `migrate --reset` > `deploy`
 
 ## Key Functionalities
