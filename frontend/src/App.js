@@ -13,6 +13,7 @@ function App() {
   const [topicsList, setTopics] = useState(undefined);
   const [signerAddress, setSignerAddress] = useState(undefined);
   const [oracleAddress, setOracleAddress] = useState(undefined);
+  const [claimedBets, setClaimedBets] = useState(undefined)
 
   useEffect(() => {
     const init = async () => {
@@ -25,7 +26,7 @@ function App() {
 
       var topicPool = await predictionMarket.getTopicPool();
       // remove duplicated numerical keys due to await getter
-      topicPool = topicPool.map((x) =>
+      topicPool = await topicPool.map((x) =>
         Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k)))
       );
       // combine topics and topic pool into and array of dictionaries
@@ -49,7 +50,7 @@ function App() {
           // arbitrator reported 
           reported: o.finished,
           result: o.result,
-          userBet: o.userBet.toNumber(),
+          userBet: o.userBet.toString(),
           claimed: o.claimed,
           // remove duplicated numerical keys due to await getter
           sides: side.map((x) =>
@@ -58,6 +59,12 @@ function App() {
         };
       });
       setTopics(allTopics);
+
+      var allBets = new Map();
+      await allTopics.map((topic) => {
+        allBets.set(topic.id, topic.claimed);
+      });
+      setClaimedBets(allBets);
     };
     init();
   }, []);
@@ -65,7 +72,8 @@ function App() {
   if (
     typeof predictionMarket === "undefined" ||
     typeof topicsList === "undefined" ||
-    typeof signerAddress === "undefined"
+    typeof signerAddress === "undefined" ||
+    typeof userBets === "undefined"
   ) {
     return "Loading...";
   }
@@ -113,16 +121,6 @@ function App() {
       alert("Unable to claim bet!");
     }
   };
-
-  const getUserBets = async () => {
-    try {
-      await predictionMarket.getUserBets(signerAddress);
-
-    }catch (err){
-      console.log(err);
-      alert("Unable to retrieve user bets!");
-    }
-  }
 
   const handleReportResult = async (uuid, winner) => {
     // reportResult(string memory topicID, string memory result
@@ -208,7 +206,7 @@ function App() {
         />
         <Route
           path="/UserBets"
-          element={<UserBets predictionMarket = {predictionMarket} signer = {signerAddress}/>}
+          element={<UserBets claimedBet = {claimedBets} predictionMarket = {predictionMarket} signer = {signerAddress}/>}
         />
       </Routes>
     </BrowserRouter>
