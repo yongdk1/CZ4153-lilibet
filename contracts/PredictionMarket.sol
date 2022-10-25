@@ -151,8 +151,8 @@ contract PredictionMarket{
     function placeBet(string memory topicID, string memory side) public payable {
         require(
             createdTopics[topicID]
-            && !finishedTopics[topicID] 
-            && topicDeadlines[topicID] >= block.timestamp,
+            && !finishedTopics[topicID], 
+            // && topicDeadlines[topicID] >= block.timestamp,
         "Unable to place bets, check arguments.");
 
         uint256 bet = msg.value;

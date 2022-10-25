@@ -93,7 +93,7 @@ input {
     0px 3px 6px rgba(0, 0, 0, 0.02),
     0px 6px 12px rgba(0, 0, 0, 0.02)
   ;
-  cursor: pointer;
+  /* cursor: pointer; */
   color: black;
   transition: all 0.2s;
 }
@@ -140,7 +140,7 @@ p {
   width: 49%;
   border-radius: 8px;
   color: black;
-  font-weight: 400;
+  font-weight: 500;
   border-width: 0;
   padding: 4px 0px;
 }
@@ -195,6 +195,11 @@ p {
   border-width: 0;
   padding: 8px 4px;
 }
+
+.claim-button:hover{
+  background-color: #237641;;
+}
+
 .winner-container {
   margin: auto;
   width: 50%;
@@ -205,6 +210,16 @@ p {
   align-items: center;
 }
 
+.closedbet-container {
+  /* width: 100%; */
+  margin: auto;
+  width: 50%;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .row {
   display: flex;
   align-items: stretch;

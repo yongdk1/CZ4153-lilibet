@@ -11,6 +11,7 @@ module.exports = async function (deployer, _network, addresses) {
     "ac420079-ad12-4ca5-868c-0aa07a14afb6", 
     "NBA Playoff Final", 
     ['Warriors','Celtics'],
+    // Saturday, 1 October 2022
     1664582400, 
     150, 
     10,
@@ -18,18 +19,43 @@ module.exports = async function (deployer, _network, addresses) {
     oracle,
     {from: gambler1}
   );
+  
+  await predictionMarket.placeBet(
+    "ac420079-ad12-4ca5-868c-0aa07a14afb6", 
+    "Warriors", 
+    {from: gambler2, value: web3.utils.toWei('2', 'ether')}
+  );
+
+  await predictionMarket.placeBet(
+    "ac420079-ad12-4ca5-868c-0aa07a14afb6", 
+    "Warriors", 
+    {from: gambler3, value: web3.utils.toWei('20', 'ether')}
+  );
 
   // topic with betting closed and resolution date over
   await predictionMarket.createTopic(
     "7c2ab882-c9d5-41e6-9ec5-26d8ae1299f6", 
     "Most handsome male celebrity of 2022", 
     ['Timothee Chalamet','Shawn Mendes'],
+    // Thursday, 1 September 2022
     1661990400, 
-    101, 
+    110, 
     10,
     "By TC Candler",
     oracle,
     {from: gambler1}
+  );
+
+  await predictionMarket.placeBet(
+    "7c2ab882-c9d5-41e6-9ec5-26d8ae1299f6", 
+    "Timothee Chalamet", 
+    {from: gambler3, value: web3.utils.toWei('1', 'ether')}
+  );
+
+  await predictionMarket.placeBet(
+    "7c2ab882-c9d5-41e6-9ec5-26d8ae1299f6", 
+    "Shawn Mendes", 
+    {from: gambler4, value: web3.utils.toWei('10', 'ether')}
   );
 
   await predictionMarket.reportResult(
