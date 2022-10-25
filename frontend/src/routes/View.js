@@ -47,7 +47,7 @@ function BetOption(props) {
     console.log("Bet amount:", betAmount);
     console.log("Bet Side:", betSide);
 
-    await props.placeBet(props.topic.id, betSide, betAmount);
+    await props.placeBet(props.topic.id, betSide, (parseInt(betAmount)+100).toString());
 
     alert(
       "You have placed bet amount of " +
@@ -60,7 +60,7 @@ function BetOption(props) {
   };
 
   const handleChange = (evt) => {
-    setBetAmount(evt.target.value + 100);
+    setBetAmount(evt.target.value);
   };
 
   return (
