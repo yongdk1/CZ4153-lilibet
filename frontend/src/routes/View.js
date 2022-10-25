@@ -4,17 +4,20 @@ function BetOption(props) {
   const [betAmount, setBetAmount] = useState(props.topic.minBet);
   const [betSide, setBetSide] = useState("");
 
+  let side0 = parseInt(props.topic.sides[0].amount.toString());
+  let side1 = parseInt(props.topic.sides[1].amount.toString());
+
   console.log(props.topic.name);
-  console.log("side 1 amt:", props.topic.sides[0].amount.toNumber());
-  console.log("side 2 amt:", props.topic.sides[1].amount.toNumber());
+  console.log("side 1 amt:", side0);
+  console.log("side 2 amt:", side1);
 
   function dynamicWidth(side) {
     var perc;
 
     if (side === undefined || side === 0) {
       if (
-        props.topic.sides[0].amount.toNumber() === 0 &&
-        props.topic.sides[1].amount.toNumber() === 0
+        side0 === 0 &&
+        side1 === 0
       ) {
         perc = 50;
       } else {
@@ -23,8 +26,8 @@ function BetOption(props) {
     } else {
       perc = Math.round(
         (side /
-          (props.topic.sides[0].amount.toNumber() +
-            props.topic.sides[1].amount.toNumber())) *
+          (side0 +
+            side1)) *
           100
       );
     }
@@ -107,45 +110,45 @@ function BetOption(props) {
             <div class="row">
               <div class="bar-container">
                 {barDisplay(
-                  props.topic.sides[0].amount.toNumber(),
-                  props.topic.sides[1].amount.toNumber()
+                  side0,
+                  side1
                 ) ? (
                   <div
                     class="bar val-a"
                     style={{
                       "flex-basis": dynamicWidth(
-                        props.topic.sides[0].amount.toNumber()
+                        side0
                       ),
                     }}
                   >
                     <div className="align-left">
-                      {props.topic.sides[0].amount.toNumber() === 0 ? (
+                      {side0 === 0 ? (
                         0
                       ) : (
                         <div>
                           {props.topic.sides[0].side}&nbsp;
-                          {dynamicWidth(props.topic.sides[0].amount.toNumber())}
+                          {dynamicWidth(side0)}
                         </div>
                       )}
                     </div>
                   </div>
                 ) : null}
-                {barDisplay(props.topic.sides[1].amount.toNumber(),
-                  props.topic.sides[0].amount.toNumber())?<div
+                {barDisplay(side1,
+                  side0)?<div
                   class="bar val-b"
                   style={{
                     "flex-basis": dynamicWidth(
-                      props.topic.sides[1].amount.toNumber()
+                      side1
                     ),
                   }}
                 >
                   <div className="align-right">
-                    {props.topic.sides[1].amount.toNumber() === 0 ? (
+                    {side1 === 0 ? (
                       0
                     ) : (
                       <div>
                         {props.topic.sides[1].side}&nbsp;
-                        {dynamicWidth(props.topic.sides[1].amount.toNumber())}
+                        {dynamicWidth(side1)}
                       </div>
                     )}
                   </div>
