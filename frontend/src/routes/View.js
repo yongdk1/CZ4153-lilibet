@@ -64,8 +64,8 @@ function BetOption(props) {
     <div className="topic-item">
       {props.topic.endDate < Date.now() / 1000 ? (
         <div className="closedbet-container">
-          <br></br>
-          <br></br>
+          {/* <br></br>
+          <br></br> */}
           Betting Closed
         </div>
       ) : (
@@ -184,7 +184,7 @@ function ViewList(props) {
 
   return (
     <div className="parent-container">
-      <h2 className="addHeader">List of Topics currently:</h2>
+      {/* <h2 className="addHeader">List of Topics currently:</h2> */}
       {/* <div className="topic-container"> */}
       {topicList.map((topic, i) => {
         console.log(topic);
