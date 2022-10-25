@@ -7,7 +7,7 @@ function BetOption(props) {
   // const [sampleAmt1, setSampleAmt1] = useState(1000);
   // const [sampleAmt2, setSampleAmt2] = useState(60);
 
-  console.log(props.topic.sides[0].amount.toNumber());
+  // console.log(props.topic.sides[0].amount.toNumber());
 
   function dynamicWidth(side) {
     var perc;
@@ -52,6 +52,8 @@ function BetOption(props) {
     <div className="topic-item">
       {props.topic.endDate < Date.now()/1000? (
             <div className="closedbet-container">
+              <br></br>
+              <br></br>
               Betting Closed
           </div>
             ) : (
