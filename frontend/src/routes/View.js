@@ -7,7 +7,7 @@ function BetOption(props) {
   // const [sampleAmt1, setSampleAmt1] = useState(1000);
   // const [sampleAmt2, setSampleAmt2] = useState(60);
 
-  console.log(props.topic.sides[0].amount.toNumber());
+  console.log(props.topic.sides[0].amount.toString());
 
   function dynamicWidth(side) {
     var perc;
