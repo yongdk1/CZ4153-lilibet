@@ -4,26 +4,39 @@ function BetOption(props) {
   const [betAmount, setBetAmount] = useState(props.topic.minBet);
   const [betSide, setBetSide] = useState("");
 
-  // const [sampleAmt1, setSampleAmt1] = useState(1000);
-  // const [sampleAmt2, setSampleAmt2] = useState(60);
-
-  // console.log(props.topic.sides[0].amount.toNumber());
+  console.log(props.topic.name);
+  console.log("side 1 amt:", props.topic.sides[0].amount.toNumber());
+  console.log("side 2 amt:", props.topic.sides[1].amount.toNumber());
 
   function dynamicWidth(side) {
     var perc;
 
-    if (side == undefined || side == 0) {
-      perc = 0;
+    if (side === undefined || side === 0) {
+      if (
+        props.topic.sides[0].amount.toNumber() === 0 &&
+        props.topic.sides[1].amount.toNumber() === 0
+      ) {
+        perc = 50;
+      } else {
+        perc = 0;
+      }
     } else {
       perc = Math.round(
         (side /
-          (props.topic.sides[0].amount +
+          (props.topic.sides[0].amount.toNumber() +
             props.topic.sides[1].amount.toNumber())) *
           100
       );
     }
     console.log("perc", String(perc) + "%");
     return String(perc) + "%";
+  }
+
+  function barDisplay(curSide, oppSide) {
+    if (curSide === 0 && oppSide != 0) {
+      return false;
+    }
+    return true;
   }
 
   const handleSubmitBet = async (e) => {
@@ -47,88 +60,99 @@ function BetOption(props) {
     setBetAmount(evt.target.value);
   };
 
-  // [{side: 'biden', amount: BigNumber}, {side: 'trump', amount: BigNumber}]
   return (
     <div className="topic-item">
-      {props.topic.endDate < Date.now()/1000? (
-            <div className="closedbet-container">
-              <br></br>
-              <br></br>
-              Betting Closed
-          </div>
-            ) : (
-      <form onSubmit={(e) => handleSubmitBet(e)}>
-        <div className="bet-container">
-          <label className="bet-item">
-            Amount to bet (Wei):
-            <input
-              type="number"
-              value={betAmount}
-              min={props.topic.minBet}
-              onChange={(event) => handleChange(event)}
-            />
-          </label>
-          <p>Total bet amount (inclusive of fees): {Number(betAmount) + 100} Wei</p>
-          <div className="button-container">
-            <button
-              className="bet-button side-1"
-              type="submit"
-              onClick={() => setBetSide(props.topic.sides[0].side)}
-            >
-              Bet on {props.topic.sides[0].side}
-            </button>
-            <button
-              className="bet-button side-2"
-              type="submit"
-              onClick={() => setBetSide(props.topic.sides[1].side)}
-            >
-              Bet on {props.topic.sides[1].side}
-            </button>
-          </div>
-          <div className="gap-above">Current Pool:</div>
-          <div class="row">
-            {/* <div class="label">Category Label</div> */}
-            <div class="bar-container">
-              <div
-                class="bar val-a"
-                style={{
-                  "flex-basis": dynamicWidth(
-                    props.topic.sides[0].amount.toNumber()
-                  ),
-                }}
+      {props.topic.endDate < Date.now() / 1000 ? (
+        <div className="closedbet-container">
+          <br></br>
+          <br></br>
+          Betting Closed
+        </div>
+      ) : (
+        <form onSubmit={(e) => handleSubmitBet(e)}>
+          <div className="bet-container">
+            <label className="bet-item">
+              Amount to bet (Wei):
+              <input
+                type="number"
+                value={betAmount + 100}
+                min={props.topic.minBet}
+                onChange={(event) => handleChange(event)}
+              />
+            </label>
+            <p>
+              Total bet amount (inclusive of fees): {Number(betAmount) + 100}{" "}
+              Wei
+            </p>
+            <div className="button-container">
+              <button
+                className="bet-button side-1"
+                type="submit"
+                onClick={() => setBetSide(props.topic.sides[0].side)}
               >
-                <div className="align-left">
-                  {props.topic.sides[0].amount.toNumber() == 0 ? 0 : (
-                    <div>
-                      {props.topic.sides[0].side}&nbsp;
-                      {dynamicWidth(props.topic.sides[0].amount.toNumber())}
-                    </div>
-                  )}
-                </div>
-                {/* ) : null} */}
-              </div>
-              <div
-                class="bar val-b"
-                style={{
-                  "flex-basis": dynamicWidth(
-                    props.topic.sides[1].amount.toNumber()
-                  ),
-                }}
+                Bet on {props.topic.sides[0].side}
+              </button>
+              <button
+                className="bet-button side-2"
+                type="submit"
+                onClick={() => setBetSide(props.topic.sides[1].side)}
               >
-                <div className="align-right">
-                {props.topic.sides[1].amount.toNumber() == 0 ? 0 : (
-                    <div>
-                      {props.topic.sides[1].side}&nbsp;
-                      {dynamicWidth(props.topic.sides[1].amount.toNumber())}
-                    </div>
-                  )}
-                </div>
-              </div>
+                Bet on {props.topic.sides[1].side}
+              </button>
             </div>
           </div>
-        </div>
-      </form>
-            )}
+        </form>
+      )}
+      <div className="gap-above">Current Pool:</div>
+            <div class="row">
+              <div class="bar-container">
+                {barDisplay(
+                  props.topic.sides[0].amount.toNumber(),
+                  props.topic.sides[1].amount.toNumber()
+                ) ? (
+                  <div
+                    class="bar val-a"
+                    style={{
+                      "flex-basis": dynamicWidth(
+                        props.topic.sides[0].amount.toNumber()
+                      ),
+                    }}
+                  >
+                    <div className="align-left">
+                      {props.topic.sides[0].amount.toNumber() === 0 ? (
+                        0
+                      ) : (
+                        <div>
+                          {props.topic.sides[0].side}&nbsp;
+                          {dynamicWidth(props.topic.sides[0].amount.toNumber())}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : null}
+                {barDisplay(props.topic.sides[1].amount.toNumber(),
+                  props.topic.sides[0].amount.toNumber())?<div
+                  class="bar val-b"
+                  style={{
+                    "flex-basis": dynamicWidth(
+                      props.topic.sides[1].amount.toNumber()
+                    ),
+                  }}
+                >
+                  <div className="align-right">
+                    {props.topic.sides[1].amount.toNumber() === 0 ? (
+                      0
+                    ) : (
+                      <div>
+                        {props.topic.sides[1].side}&nbsp;
+                        {dynamicWidth(props.topic.sides[1].amount.toNumber())}
+                      </div>
+                    )}
+                  </div>
+                </div>:null}
+                
+              </div>
+            </div>
     </div>
   );
 }
@@ -183,14 +207,12 @@ function ViewList(props) {
                     endDate.setUTCSeconds(value);
                     value = endDate.toString();
                     key = "Betting Close Date";
-                  } 
-                  else if (key === "resolutionDate"){
+                  } else if (key === "resolutionDate") {
                     var resolutionDate = new Date(0);
                     resolutionDate.setUTCSeconds(value);
                     value = resolutionDate.toString();
                     key = "Arbitrator Resolution Date";
-                  }
-                  else if (key === "minBet") {
+                  } else if (key === "minBet") {
                     value = value + " Wei";
                     key = "Minimum Bet";
                   } else if (key === "comm") {
@@ -215,7 +237,7 @@ function ViewList(props) {
                     if (value === "") value = "NA";
                     key = "Final Result";
                   } else {
-                    return(<p></p>)
+                    return <p></p>;
                   }
                   return (
                     <p key={index}>
