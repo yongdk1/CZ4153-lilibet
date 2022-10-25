@@ -81,7 +81,6 @@ input {
 }
 
 .view-item {
-  /* width: 50%; */
   margin-top: 16px;
   padding: 1rem 1rem 0.5rem;
   margin-bottom: 16px;
@@ -139,23 +138,40 @@ p {
 
 .bet-button {
   width: 49%;
-  /* background-color: rgb(13, 208, 238); */
   border-radius: 8px;
   color: black;
   font-weight: 400;
   border-width: 0;
+  padding: 4px 0px;
 }
 
 .side-1 {
   background-color: #81DAA1;
 }
 
+.side-1:hover{
+  background-color:#237641;
+  color: white;
+}
+
 .side-2 {
   background-color: #F2A4A4;
 }
 
+.side-2:hover{
+  background-color: #C61D1D;
+  color: white;
+}
+
+.closedbet-container{
+  margin:auto;
+  text-align: center;
+  font-weight: 500;
+  font-size: 28px;
+  margin-top:25%;
+}
+
 .resolve-bet {
-  /* width: 49%; */
   margin-left: 12px;
   background-color: rgb(13, 208, 238);
   border-radius: 6px;
@@ -166,22 +182,20 @@ p {
 .claim-container {
   width: 100%;
   display: flex;
-  /* align-content: center; */
   justify-content: center;
 }
 
 .claim-button {
   margin-top: 16px;
-  width: 35%;
-  height: 50px;
+  width: 40%;
   background-color: #0fac0a;
   border-radius: 6px;
   color: white;
   font-weight: bold;
   border-width: 0;
+  padding: 8px 4px;
 }
 .winner-container {
-  /* width: 100%; */
   margin: auto;
   width: 50%;
   font-size: 16px;
@@ -195,7 +209,6 @@ p {
   display: flex;
   align-items: stretch;
   width: 100%;
-  /* margin-top:16px !; */
   margin: 0 !important;
 }
 

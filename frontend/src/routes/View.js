@@ -4,25 +4,25 @@ function BetOption(props) {
   const [betAmount, setBetAmount] = useState(props.topic.minBet);
   const [betSide, setBetSide] = useState("");
 
-  // const [sampleAmt1, setSampleAmt1] = useState(1000);
-  // const [sampleAmt2, setSampleAmt2] = useState(60);
-
-  console.log(props.topic.sides[0].amount.toNumber());
+  
+  console.log(props.topic.name)
+  console.log("side 1 amt:",props.topic.sides[0].amount.toNumber());
+  console.log("side 2 amt:",props.topic.sides[1].amount.toNumber())
 
   function dynamicWidth(side) {
     var perc;
 
-    if (side == undefined || side == 0) {
+    if (side === undefined || side === 0) {
       perc = 0;
     } else {
       perc = Math.round(
         (side /
-          (props.topic.sides[0].amount +
+          (props.topic.sides[0].amount.toNumber() +
             props.topic.sides[1].amount.toNumber())) *
           100
       );
     }
-    console.log("perc", String(perc) + "%");
+    console.log("perc", String(perc) + "%", );
     return String(perc) + "%";
   }
 
@@ -61,7 +61,7 @@ function BetOption(props) {
             Amount to bet (Wei):
             <input
               type="number"
-              value={betAmount}
+              value={betAmount + 100}
               min={props.topic.minBet}
               onChange={(event) => handleChange(event)}
             />
@@ -96,7 +96,7 @@ function BetOption(props) {
                 }}
               >
                 <div className="align-left">
-                  {props.topic.sides[0].amount.toNumber() == 0 ? 0 : (
+                  {props.topic.sides[0].amount.toNumber() === 0 ? 0 : (
                     <div>
                       {props.topic.sides[0].side}&nbsp;
                       {dynamicWidth(props.topic.sides[0].amount.toNumber())}
@@ -114,7 +114,7 @@ function BetOption(props) {
                 }}
               >
                 <div className="align-right">
-                {props.topic.sides[1].amount.toNumber() == 0 ? 0 : (
+                {props.topic.sides[1].amount.toNumber() === 0 ? 0 : (
                     <div>
                       {props.topic.sides[1].side}&nbsp;
                       {dynamicWidth(props.topic.sides[1].amount.toNumber())}
