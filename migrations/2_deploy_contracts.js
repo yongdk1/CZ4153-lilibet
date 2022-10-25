@@ -28,7 +28,7 @@ module.exports = async function (deployer, _network, addresses) {
 
   await predictionMarket.placeBet(
     "ac420079-ad12-4ca5-868c-0aa07a14afb6", 
-    "Warriors", 
+    "Celtics", 
     {from: gambler3, value: web3.utils.toWei('20', 'ether')}
   );
 
@@ -76,6 +76,18 @@ module.exports = async function (deployer, _network, addresses) {
     {from: gambler1}
   );
 
+  await predictionMarket.placeBet(
+    "6bba15ab-8667-47e2-98b4-643191bfc6a3", 
+    "Biden", 
+    {from: gambler2, value: web3.utils.toWei('15', 'ether')}
+  );
+
+  await predictionMarket.placeBet(
+    "6bba15ab-8667-47e2-98b4-643191bfc6a3", 
+    "Trump", 
+    {from: gambler2, value: web3.utils.toWei('2', 'ether')}
+  );
+
   await predictionMarket.createTopic(
     "71bca7b6-0b72-4a0f-93e5-57db57c53e5c",
     "EPL",
@@ -88,9 +100,4 @@ module.exports = async function (deployer, _network, addresses) {
     {from: gambler2}
   )
 
-  await predictionMarket.placeBet(
-    "6bba15ab-8667-47e2-98b4-643191bfc6a3", 
-    "biden", 
-    {from: gambler3, value: web3.utils.toWei('5', 'ether')}
-  );
 };
