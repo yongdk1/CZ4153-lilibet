@@ -11,7 +11,7 @@ class MyForm extends React.Component {
       side1: "",
       side2: "",
       deadline: new Date(0),
-      arbitrator: this.props.signerAddress,
+      arbitrator: 'Topic Creator',
       commission: 0,
       minimumBet: 0,
     };

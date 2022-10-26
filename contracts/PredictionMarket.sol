@@ -35,6 +35,7 @@ contract PredictionMarket{
         uint256 comm;
         string desc;
         address judge;
+        string arb;
         address owner;
         bool finished;
         string result;
@@ -112,7 +113,7 @@ contract PredictionMarket{
     /* Contains all the information that can prove useful to people taking a look at the bet in the frontend. */
     event CreatedBet(string indexed _id, string description, string query);
 
-    function createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, uint256 minimum, uint256 commission, string memory description, address _arbitrator) public {
+    function createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, uint256 minimum, uint256 commission, string memory description, address _arbitrator, string memory arb) public {
         require(
             bytes(topicID).length > 0
             && sides.length > 1
@@ -135,7 +136,7 @@ contract PredictionMarket{
         topicArbitrator[topicID]= _arbitrator;
         topicSides[topicID] = sides;
 
-        topicList[topicID] = (topics(topicID, topic, sides, deadline, minimum, commission, description, _arbitrator, msg.sender, false, "", 0, false));
+        topicList[topicID] = (topics(topicID, topic, sides, deadline, minimum, commission, description, _arbitrator, arb, msg.sender, false, "", 0, false));
 
         // initialize the sides, set pool for each side to 0
         for (uint i = 0; i < sides.length; i++) {

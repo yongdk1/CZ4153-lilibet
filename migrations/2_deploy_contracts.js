@@ -17,6 +17,7 @@ module.exports = async function (deployer, _network, addresses) {
     10,
     "Who will win the NBA Playoff Finals?",
     oracle,
+    'Oracle',
     {from: admin}
   );
   
@@ -43,6 +44,7 @@ module.exports = async function (deployer, _network, addresses) {
     10,
     "By TC Candler",
     oracle,
+    'Oracle',
     {from: gambler1}
   );
 
@@ -73,6 +75,7 @@ module.exports = async function (deployer, _network, addresses) {
     10,
     "Who will win the US Election?",
     oracle,
+    'Oracle',
     {from: admin}
   );
 
@@ -97,6 +100,7 @@ module.exports = async function (deployer, _network, addresses) {
     5,
     "Who will win the championship this season?",
     oracle,
+    'Oracle',
     {from: admin}
   )
 

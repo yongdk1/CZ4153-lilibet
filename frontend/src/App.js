@@ -46,6 +46,7 @@ function App() {
           minBet: o.minBet.toNumber(),
           comm: o.comm.toNumber(),
           judge: o.judge,
+          arb: o.arb,
           // betting closed
           bettingclosed: o.endDate.toNumber() < Date.now()/1000,
           // arbitrator reported 
@@ -103,6 +104,7 @@ function App() {
         evt.commission,
         evt.description,
         arbitrator,
+        evt.arbitrator,
         { from: signerAddress }
       );
 

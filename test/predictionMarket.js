@@ -28,6 +28,7 @@ contract('PredictionMarket', addresses => {
       10,
       "description",
       oracle,
+      'Oracle',
       {from: gambler1}
     );
 
