@@ -11,10 +11,9 @@ class MyForm extends React.Component {
       side1: "",
       side2: "",
       deadline: new Date(0),
-      // resolution: "",
       arbitrator: this.props.signerAddress,
       commission: 0,
-      minimumBet: 0
+      minimumBet: 0,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -25,7 +24,7 @@ class MyForm extends React.Component {
     this.setState({ [k]: evt.target.value });
   }
 
-  handleSubmit(event){
+  handleSubmit(event) {
     event.preventDefault();
     const u_id = uuidv4();
     this.setState({ uuid: u_id }, () => this.props.addTopic(this.state));
@@ -71,19 +70,15 @@ class MyForm extends React.Component {
               onChange={(event) => this.handleChange("deadline", event)}
             />
           </label>
-          {/* <label>
-            Resolution:
-            <input
-              type="text"
-              onChange={(event) => this.handleChange("resolution", event)}
-            />
-          </label> */}
           <label>
             Arbitrator:
             <br></br>
-            <select name="Arbitrator" onChange={(event) => this.handleChange("arbitrator", event)} >
-                <option value="Topic Creator">Topic Creator</option>
-                <option value="Oracle">Oracle</option>
+            <select
+              name="Arbitrator"
+              onChange={(event) => this.handleChange("arbitrator", event)}
+            >
+              <option value="Topic Creator">Topic Creator</option>
+              <option value="Oracle">Oracle</option>
             </select>
           </label>
           <label>
@@ -120,7 +115,7 @@ function Add(props) {
     <div className="parent-container">
       <h2 className="addHeader">Add A Topic</h2>
       <div className="splitScreen">
-        <div className="table-cell">
+        <div className="add-item">
           <h4>General Info:</h4>
           <p>Your address: {props.signerAddress}</p>
           <p>Number of Topics: {topicList.length}</p>
@@ -128,7 +123,13 @@ function Add(props) {
           <p>Contract Owner: </p>
           <p>Block Number:</p>
         </div>
-        <MyForm className="table-cell" addTopic={props.addTopic} signerAddress={props.signerAddress}/>
+        <div className="add-item">
+          <MyForm
+            className="add-item"
+            addTopic={props.addTopic}
+            signerAddress={props.signerAddress}
+          />
+        </div>
       </div>
     </div>
   );

@@ -15,28 +15,20 @@ function BetOption(props) {
     var perc;
 
     if (side === undefined || side === 0) {
-      if (
-        side0 === 0 &&
-        side1 === 0
-      ) {
+      if (side0 === 0 && side1 === 0) {
         perc = 50;
       } else {
         perc = 0;
       }
     } else {
-      perc = Math.round(
-        (side /
-          (side0 +
-            side1)) *
-          100
-      );
+      perc = Math.round((side / (side0 + side1)) * 100);
     }
     console.log("perc", String(perc) + "%");
     return String(perc) + "%";
   }
 
   function barDisplay(curSide, oppSide) {
-    if (curSide === 0 && oppSide != 0) {
+    if (curSide === 0 && oppSide !== 0) {
       return false;
     }
     return true;
@@ -47,7 +39,11 @@ function BetOption(props) {
     console.log("Bet amount:", betAmount);
     console.log("Bet Side:", betSide);
 
-    await props.placeBet(props.topic.id, betSide, (parseInt(betAmount)+100).toString());
+    await props.placeBet(
+      props.topic.id,
+      betSide,
+      (parseInt(betAmount) + 100).toString()
+    );
 
     alert(
       "You have placed bet amount of " +
@@ -107,55 +103,62 @@ function BetOption(props) {
         </form>
       )}
       <div className="gap-above">Current Pool:</div>
-            <div class="row">
-              <div class="bar-container">
-                {barDisplay(
-                  side0,
-                  side1
-                ) ? (
-                  <div
-                    class="bar val-a"
-                    style={{
-                      "flex-basis": dynamicWidth(
-                        side0
-                      ),
-                    }}
-                  >
-                    <div className="align-left">
-                      {side0 === 0 ? (
-                        0
-                      ) : (
-                        <div>
-                          {props.topic.sides[0].side}&nbsp;
-                          {dynamicWidth(side0)}
-                        </div>
-                      )}
-                    </div>
+      <div class="row">
+        <div class="bar-container">
+          {barDisplay(side0, side1) ? (
+            <div
+              class="bar val-a"
+              style={{
+                "flex-basis": dynamicWidth(side0),
+              }}
+            >
+              <div className="align-left">
+                {side0 === 0 ? (
+                  0
+                ) : (
+                  <div>
+                    {props.topic.sides[0].side}&nbsp;
+                    {dynamicWidth(side0)}
                   </div>
-                ) : null}
-                {barDisplay(side1,
-                  side0)?<div
-                  class="bar val-b"
-                  style={{
-                    "flex-basis": dynamicWidth(
-                      side1
-                    ),
-                  }}
-                >
-                  <div className="align-right">
-                    {side1 === 0 ? (
-                      0
-                    ) : (
-                      <div>
-                        {props.topic.sides[1].side}&nbsp;
-                        {dynamicWidth(side1)}
-                      </div>
-                    )}
-                  </div>
-                </div>:null}
-                
+                )}
               </div>
             </div>
+          ) : null}
+          {barDisplay(side1, side0) ? (
+            <div
+              class="bar val-b"
+              style={{
+                "flex-basis": dynamicWidth(side1),
+              }}
+            >
+              <div className="align-right">
+                {side1 === 0 ? (
+                  0
+                ) : (
+                  <div>
+                    {props.topic.sides[1].side}&nbsp;
+                    {dynamicWidth(side1)}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </div>
+      <div className="gap-above">
+        <p className="pool-amt">
+          <div className="pool-amt-text">
+            {props.topic.sides[0].side + ":"}&nbsp;
+          </div>
+          <span>{side0}</span>
+        </p>
+        <p className="pool-amt">
+          <div className="pool-amt-text">
+            {props.topic.sides[1].side + ":"}&nbsp;
+          </div>
+          <span>{side1}</span>
+        </p>
+      </div>
     </div>
   );
 }

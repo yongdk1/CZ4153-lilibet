@@ -28,12 +28,10 @@ form {
 .splitScreen {
   display: flex;
   flex-direction: row;
-  width: 96%;
+  width: 100%;
   margin: auto;
-}
-
-.table-cell {
-  width: 50%;
+  justify-content: space-between;
+  margin-bottom: 16px;
 }
 
 .question-attr {
@@ -68,7 +66,7 @@ input {
   color: black;
   border-radius: 100px;
   border-width: 0;
-  /* font-size: 60px; */
+  font-weight: 500;
 }
 
 .bar:hover {
@@ -79,11 +77,22 @@ input {
   padding: 4px 12px;
 }
 
-.table-cell {
-  /* margin-left: 32px;
-    margin:auto;
-    margin-top: 0; */
-  /* margin-top: 12px; */
+.add-item{
+  border-radius: 10px;
+  border: 1px solid #e4e4e455;
+  box-shadow: 
+    0px 3px 6px rgba(0, 0, 0, 0.02),
+    0px 6px 12px rgba(0, 0, 0, 0.02)
+  ;
+  color: black;
+  transition: all 0.2s;
+  background-color: rgb(247, 242, 242);
+  width: 49%;
+  padding: 1rem 1rem 0.5rem;
+}
+
+.add-item:hover{
+  box-shadow: 2px 2px 2px gray;
 }
 
 .parent-container {
@@ -95,30 +104,35 @@ input {
   margin-top: 16px;
   padding: 1rem 1rem 0.5rem;
   margin-bottom: 16px;
-  padding: 8px 16px;
   display: flex;
-  background-color: #FFFBF1;
   border-radius: 10px;
   border: 1px solid #e4e4e455;
   box-shadow: 
     0px 3px 6px rgba(0, 0, 0, 0.02),
     0px 6px 12px rgba(0, 0, 0, 0.02)
   ;
-  /* cursor: pointer; */
   color: black;
   transition: all 0.2s;
   background-color: rgb(247, 242, 242);
+  justify-content: space-between;
+}
+
+.view-item:hover{
+  box-shadow: 2px 2px 2px gray;
 }
 
 .abr-item {
   margin-top: 16px;
-  /* border: 1px solid black; */
   margin-bottom: 16px;
   padding: 8px 16px;
   display: flex;
   border-radius: 8px;
-  background-color: #4da3b5a3;
+  background-color: rgb(247, 242, 242);
   justify-content: space-between;
+}
+
+.abr-item:hover{
+  box-shadow: 2px 2px 2px gray;
 }
 
 p {
@@ -126,7 +140,7 @@ p {
 }
 
 .topic-item {
-  width: 50%;
+  width: 49.5%;
 }
 
 .font-12 {
@@ -141,6 +155,14 @@ p {
 
 .bet-item {
   width: 100%;
+}
+
+.pool-amt{
+  display: flex;
+}
+.pool-amt-text{
+  text-transform: capitalize;
+  font-weight: 500;
 }
 
 .button-container {
@@ -185,10 +207,17 @@ p {
 
 .resolve-bet {
   margin-left: 12px;
-  background-color: rgb(13, 208, 238);
+  background-color: rgb(22, 82, 240);
   border-radius: 6px;
-  color: black;
+  color: white;
   font-weight: 600;
+  border-width: 0;
+  padding:4px 8px;
+}
+
+.resolve-bet:hover{
+  background-color: #7b8cf7;
+  color: black;
 }
 
 .claim-container {
@@ -214,7 +243,7 @@ p {
 
 .winner-container {
   margin: auto;
-  width: 50%;
+  width: 49.5%;
   font-size: 16px;
   font-weight: 600;
   display: flex;

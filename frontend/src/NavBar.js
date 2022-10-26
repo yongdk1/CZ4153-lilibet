@@ -13,12 +13,12 @@ function NavBar() {
 
   return (
     <div className="navBar">
-      <Link to="/Add" >
+      <Link to="/Add">
         <button className={curState[0] ? "bar-active" :"bar"} onClick={()=>handleClick(0)}>
           <div className="btn-text">Add Topic</div>
         </button>
       </Link>
-      <Link to="/View" >
+      <Link to="/View">
         <button className={curState[1] ? "bar-active" :"bar"} onClick={()=>handleClick(1)}>
           <div className="btn-text">View Topics</div>
         </button>
