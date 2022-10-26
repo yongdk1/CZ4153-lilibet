@@ -26,12 +26,12 @@ To launch webside, `cd frontend` and run `npm start`
 ### Create a Topic
 Users can open new topic (a new prediction market) with 
 1. Topic Name
-2. Outcome options to bet on (2 or More)
-3. Deadline for betting to close (resolution deadline is default 30 days after betting closes)
-4. Minimum bet value (> 100 Wei, as Fixed Commission to contract owner is 100 Wei)
-5. Commision to Topic Owner (max Commission is 20%)
-6. Description
-7. Arbitrator identity (can be default oracle, or topic owner)
+2. Description
+3. Outcome options to bet on (2 or More)
+4. Deadline for betting to close (resolution deadline is default 30 days after betting closes)
+5. Arbitrator identity (can be default oracle, or topic owner)
+6. Commision to Topic Owner (max Commission is 20%)
+7. Minimum bet value (> 100 Wei, as Fixed Commission to contract owner is 100 Wei)
 
 ### Place Bets
 Minimum bet value is 100 Wei or as specified by Topic Owner, whichever is higher
