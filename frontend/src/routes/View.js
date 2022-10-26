@@ -190,8 +190,6 @@ function ViewList(props) {
 
   return (
     <div className="parent-container">
-      {/* <h2 className="addHeader">List of Topics currently:</h2> */}
-      {/* <div className="topic-container"> */}
       {topicList.map((topic, i) => {
         console.log(topic);
         // const keys = Object.keys(topic = Object.fromEntries(Object.entries(topic).filter(([k, v]) => isNaN(k))));

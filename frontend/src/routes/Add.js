@@ -113,7 +113,6 @@ function Add(props) {
   const topicList = props.topicList;
   return (
     <div className="parent-container">
-      <h2 className="addHeader">Add A Topic</h2>
       <div className="splitScreen">
         <div className="add-item">
           <h4>General Info:</h4>
@@ -124,6 +123,7 @@ function Add(props) {
           <p>Block Number:</p>
         </div>
         <div className="add-item">
+          <h2 className="addHeader">Add A Topic</h2>
           <MyForm
             className="add-item"
             addTopic={props.addTopic}

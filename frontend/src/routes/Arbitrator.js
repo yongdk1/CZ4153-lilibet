@@ -3,7 +3,7 @@ import React, { useState } from "react";
 function Arbitrator(props) {
   const [winner, setWinner] = useState(null);
 
-  // add to blockchain
+  // handle submit event & call disableBetting,reportResult
   function handleSubmit(event, question) {
     if (winner !== question["outcomes"][0] && winner !== question["outcomes"][1] ) {
       alert("Please select a valid result for: " + question.name);
