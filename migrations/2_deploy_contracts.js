@@ -17,19 +17,19 @@ module.exports = async function (deployer, _network, addresses) {
     10,
     "Who will win the NBA Playoff Finals?",
     oracle,
-    {from: gambler1}
+    {from: admin}
   );
   
   await predictionMarket.placeBet(
     "ac420079-ad12-4ca5-868c-0aa07a14afb6", 
     "Warriors", 
-    {from: gambler2, value: web3.utils.toWei('2', 'ether')}
+    {from: gambler1, value: web3.utils.toWei('2', 'ether')}
   );
 
   await predictionMarket.placeBet(
     "ac420079-ad12-4ca5-868c-0aa07a14afb6", 
     "Celtics", 
-    {from: gambler3, value: web3.utils.toWei('20', 'ether')}
+    {from: gambler2, value: web3.utils.toWei('20', 'ether')}
   );
 
   // topic with betting closed and resolution date over
@@ -49,13 +49,13 @@ module.exports = async function (deployer, _network, addresses) {
   await predictionMarket.placeBet(
     "7c2ab882-c9d5-41e6-9ec5-26d8ae1299f6", 
     "Timothee Chalamet", 
-    {from: gambler3, value: web3.utils.toWei('1', 'ether')}
+    {from: gambler1, value: web3.utils.toWei('1', 'ether')}
   );
 
   await predictionMarket.placeBet(
     "7c2ab882-c9d5-41e6-9ec5-26d8ae1299f6", 
     "Shawn Mendes", 
-    {from: gambler4, value: web3.utils.toWei('10', 'ether')}
+    {from: gambler2, value: web3.utils.toWei('10', 'ether')}
   );
 
   await predictionMarket.reportResult(
@@ -73,19 +73,19 @@ module.exports = async function (deployer, _network, addresses) {
     10,
     "Who will win the US Election?",
     oracle,
-    {from: gambler1}
+    {from: admin}
   );
 
   await predictionMarket.placeBet(
     "6bba15ab-8667-47e2-98b4-643191bfc6a3", 
     "Biden", 
-    {from: gambler2, value: web3.utils.toWei('15', 'ether')}
+    {from: gambler3, value: web3.utils.toWei('15', 'ether')}
   );
 
   await predictionMarket.placeBet(
     "6bba15ab-8667-47e2-98b4-643191bfc6a3", 
     "Trump", 
-    {from: gambler2, value: web3.utils.toWei('2', 'ether')}
+    {from: gambler4, value: web3.utils.toWei('2', 'ether')}
   );
 
   await predictionMarket.createTopic(
@@ -97,7 +97,7 @@ module.exports = async function (deployer, _network, addresses) {
     5,
     "Who will win the championship this season?",
     oracle,
-    {from: gambler2}
+    {from: admin}
   )
 
 };
