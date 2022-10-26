@@ -11,7 +11,9 @@ function UserBets(props) {
       );
       bets.map((bet) => {
         bet.amt = bet.amt.toString();
-        bet.claimed = props.claimedBet.get(bet.topicid)
+        console.log(props.claimedBet.get(bet.topicid))
+        bet.claimed = props.claimedBet.get(bet.topicid)[1]
+        bet.name = props.claimedBet.get(bet.topicid)[0]
       })
       setUserBets(bets);
     };
@@ -30,6 +32,10 @@ function UserBets(props) {
             <div className="topic-item">
               <p>
                 <span className="question-attr">Topic Name:</span> &nbsp;
+                {bet.name}
+              </p>
+              <p>
+                <span className="question-attr">Topic ID:</span> &nbsp;
                 {bet.topicid}
               </p>
               <p>

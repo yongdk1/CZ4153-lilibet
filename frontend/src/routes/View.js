@@ -7,10 +7,6 @@ function BetOption(props) {
   let side0 = parseInt(props.topic.sides[0].amount.toString());
   let side1 = parseInt(props.topic.sides[1].amount.toString());
 
-  console.log(props.topic.name);
-  console.log("side 1 amt:", side0);
-  console.log("side 2 amt:", side1);
-
   function dynamicWidth(side) {
     var perc;
 
@@ -23,7 +19,6 @@ function BetOption(props) {
     } else {
       perc = Math.round((side / (side0 + side1)) * 100);
     }
-    console.log("perc", String(perc) + "%");
     return String(perc) + "%";
   }
 
@@ -103,13 +98,13 @@ function BetOption(props) {
         </form>
       )}
       <div className="gap-above">Current Pool:</div>
-      <div class="row">
-        <div class="bar-container">
+      <div className="row">
+        <div className="bar-container">
           {barDisplay(side0, side1) ? (
             <div
-              class="bar val-a"
+              className="bar val-a"
               style={{
-                "flex-basis": dynamicWidth(side0),
+                "flexBasis": dynamicWidth(side0),
               }}
             >
               <div className="align-left">
@@ -126,9 +121,9 @@ function BetOption(props) {
           ) : null}
           {barDisplay(side1, side0) ? (
             <div
-              class="bar val-b"
+              className="bar val-b"
               style={{
-                "flex-basis": dynamicWidth(side1),
+                "flexBasis": dynamicWidth(side1),
               }}
             >
               <div className="align-right">
@@ -150,13 +145,13 @@ function BetOption(props) {
           <div className="pool-amt-text">
             {props.topic.sides[0].side + ":"}&nbsp;
           </div>
-          <span>{side0}</span>
+          <span>{props.topic.sides[0].amount.toString()}</span>
         </p>
         <p className="pool-amt">
           <div className="pool-amt-text">
             {props.topic.sides[1].side + ":"}&nbsp;
           </div>
-          <span>{side1}</span>
+          <span>{props.topic.sides[1].amount.toString()}</span>
         </p>
       </div>
     </div>
@@ -193,7 +188,6 @@ function ViewList(props) {
       {/* <h2 className="addHeader">List of Topics currently:</h2> */}
       {/* <div className="topic-container"> */}
       {topicList.map((topic, i) => {
-        console.log(topic);
         // const keys = Object.keys(topic = Object.fromEntries(Object.entries(topic).filter(([k, v]) => isNaN(k))));
         const keys = Object.keys(topic);
         return (

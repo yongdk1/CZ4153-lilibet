@@ -58,11 +58,11 @@ function App() {
           ),
         };
       });
-      setTopics(allTopics);
+      setTopics(allTopics.reverse());
 
       var allBets = new Map();
       await allTopics.map((topic) => {
-        allBets.set(topic.id, topic.claimed);
+        allBets.set(topic.id, [topic.name, topic.claimed]);
       });
       setClaimedBets(allBets);
     };

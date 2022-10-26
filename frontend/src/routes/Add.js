@@ -119,9 +119,6 @@ function Add(props) {
           <h4>General Info:</h4>
           <p>Your address: {props.signerAddress}</p>
           <p>Number of Topics: {topicList.length}</p>
-          <p>Your info:</p>
-          <p>Contract Owner: </p>
-          <p>Block Number:</p>
         </div>
         <div className="add-item">
           <MyForm
