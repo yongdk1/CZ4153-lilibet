@@ -234,6 +234,12 @@ function ViewList(props) {
                   } else if (key === "result") {
                     if (value === "") value = "NA";
                     key = "Final Result";
+                  } else if (key === "isOwner") {
+                    if (value) {
+                      return <p>YOU ARE THE OWNER</p>
+                    } else {
+                      return <p></p>
+                    }
                   } else {
                     return <p></p>;
                   }

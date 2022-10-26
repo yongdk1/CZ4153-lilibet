@@ -35,6 +35,7 @@ function App() {
           return o1.id === o.id;
         }).pools;
         return {
+          isOwner: o.owner === signerAddress,
           id: o.id,
           name: o.name,
           desc: o.desc,

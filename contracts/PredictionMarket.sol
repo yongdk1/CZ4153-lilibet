@@ -35,6 +35,7 @@ contract PredictionMarket{
         uint256 comm;
         string desc;
         address judge;
+        address owner;
         bool finished;
         string result;
         uint256 userBet;
@@ -134,7 +135,7 @@ contract PredictionMarket{
         topicArbitrator[topicID]= _arbitrator;
         topicSides[topicID] = sides;
 
-        topicList[topicID] = (topics(topicID, topic, sides, deadline, minimum, commission, description, _arbitrator, false, "", 0, false));
+        topicList[topicID] = (topics(topicID, topic, sides, deadline, minimum, commission, description, _arbitrator, msg.sender, false, "", 0, false));
 
         // initialize the sides, set pool for each side to 0
         for (uint i = 0; i < sides.length; i++) {
