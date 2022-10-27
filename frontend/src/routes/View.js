@@ -57,11 +57,7 @@ function BetOption(props) {
   return (
     <div className="topic-item">
       {props.topic.endDate < Date.now() / 1000 ? (
-        <div className="closedbet-container">
-          {/* <br></br>
-          <br></br> */}
-          Betting Closed
-        </div>
+        <div className="closedbet-container">Betting Closed</div>
       ) : (
         <form onSubmit={(e) => handleSubmitBet(e)}>
           <div className="bet-container">
@@ -97,14 +93,14 @@ function BetOption(props) {
           </div>
         </form>
       )}
-      <div className="gap-above">Current Pool:</div>
+      <div className="gap-above gap-below bold">Current Pool:</div>
       <div className="row">
         <div className="bar-container">
           {barDisplay(side0, side1) ? (
             <div
               className="bar val-a"
               style={{
-                "flexBasis": dynamicWidth(side0),
+                flexBasis: dynamicWidth(side0),
               }}
             >
               <div className="align-left">
@@ -123,7 +119,7 @@ function BetOption(props) {
             <div
               className="bar val-b"
               style={{
-                "flexBasis": dynamicWidth(side1),
+                flexBasis: dynamicWidth(side1),
               }}
             >
               <div className="align-right">
@@ -180,13 +176,36 @@ function ClaimBetComponent(props) {
 
 function ViewList(props) {
   const topicList = props.topicList;
+  let userBets = props.userBetsData;
+
+  function claimable(topic) {
+
+    let flag = 2
+    userBets.forEach((bet, i) => {
+      if (bet.topicid === topic.id){
+         if (bet.side === topic.result) return 1 
+         else flag = 0
+      } 
+    });
+    return flag;
+  }
+
+  function renderSwitch(topic){
+    switch(claimable(topic)){
+      case 1:
+        return <ClaimBetComponent topic={topic} claimBet={props.claimBet} />
+      case 2:
+        return <div>No Bets placed!</div>
+      case 0: 
+        return <div>Unfortunately you did not place a winning bet :(</div>
+    }
+  }
 
   console.log("Questions on VIEW:", topicList);
 
   return (
     <div className="parent-container">
       {topicList.map((topic, i) => {
-        // const keys = Object.keys(topic = Object.fromEntries(Object.entries(topic).filter(([k, v]) => isNaN(k))));
         const keys = Object.keys(topic);
         return (
           <div className="view-item">
@@ -238,9 +257,9 @@ function ViewList(props) {
                     key = "Arbitrator";
                   } else if (key === "isOwner") {
                     if (value) {
-                      return <p>YOU ARE THE OWNER</p>
+                      return <p>YOU ARE THE OWNER</p>;
                     } else {
-                      return <p></p>
+                      return <p></p>;
                     }
                   } else {
                     return <p></p>;
@@ -259,7 +278,10 @@ function ViewList(props) {
               <div className="winner-container">
                 WINNER:
                 <span className="winner-text">{topic.result}</span>
-                <ClaimBetComponent topic={topic} claimBet={props.claimBet} />
+                {/* {claimable(topic) ? (
+                  <ClaimBetComponent topic={topic} claimBet={props.claimBet} />
+                ) : null} */}
+                {renderSwitch(topic)}
               </div>
             )}
           </div>

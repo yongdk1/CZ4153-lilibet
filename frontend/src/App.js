@@ -13,7 +13,8 @@ function App() {
   const [topicsList, setTopics] = useState(undefined);
   const [signerAddress, setSignerAddress] = useState(undefined);
   const [oracleAddress, setOracleAddress] = useState(undefined);
-  const [claimedBets, setClaimedBets] = useState(undefined)
+  const [claimedBets, setClaimedBets] = useState(undefined);
+  const [userBets, setUserBets] = useState([]);
 
   useEffect(() => {
     const init = async () => {
@@ -48,8 +49,8 @@ function App() {
           judge: o.judge,
           arb: o.arb,
           // betting closed
-          bettingclosed: o.endDate.toNumber() < Date.now()/1000,
-          // arbitrator reported 
+          bettingclosed: o.endDate.toNumber() < Date.now() / 1000,
+          // arbitrator reported
           reported: o.finished,
           result: o.result,
           userBet: o.userBet.toString(),
@@ -67,6 +68,23 @@ function App() {
         allBets.set(topic.id, [topic.name, topic.claimed]);
       });
       setClaimedBets(allBets);
+
+      // retrieve user bets, setUserBets
+      let bets = await predictionMarket.getUserBets(signerAddress);
+      bets = bets.map((x) =>
+        Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k)))
+      );
+      
+      console.log("claimed bets",allBets);
+
+      bets.map((bet) => {
+        bet.amt = bet.amt.toString();
+        // console.log(claimedBets.get(bet.topicid))
+        bet.claimed = allBets.get(bet.topicid)[1];
+        bet.name = allBets.get(bet.topicid)[0];
+      });
+      console.log("bets:",bets);
+      setUserBets(bets);
     };
     init();
   }, []);
@@ -193,7 +211,12 @@ function App() {
         <Route
           path="/View"
           element={
-            <ViewList topicList={topicsList} placeBet={handlePlaceBet} claimBet = {handleClaimBet}/>
+            <ViewList
+              topicList={topicsList}
+              placeBet={handlePlaceBet}
+              claimBet={handleClaimBet}
+              userBetsData = {userBets}
+            />
           }
         />
         <Route
@@ -207,9 +230,13 @@ function App() {
             />
           }
         />
-        <Route
+        {/* <Route
           path="/UserBets"
           element={<UserBets claimedBet = {claimedBets} predictionMarket = {predictionMarket} signer = {signerAddress}/>}
+        /> */}
+        <Route
+          path="/UserBets"
+          element={<UserBets userBetsData={userBets} />}
         />
       </Routes>
     </BrowserRouter>

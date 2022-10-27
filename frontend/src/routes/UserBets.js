@@ -1,24 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 function UserBets(props) {
-  const [userBets, setUserBets] = useState([]);
-
-  useEffect(() => {
-    const init = async () => {
-      let bets = await props.predictionMarket.getUserBets(props.signer);
-      bets = bets.map((x) =>
-        Object.fromEntries(Object.entries(x).filter(([k, v]) => isNaN(k)))
-      );
-      bets.map((bet) => {
-        bet.amt = bet.amt.toString();
-        console.log(props.claimedBet.get(bet.topicid))
-        bet.claimed = props.claimedBet.get(bet.topicid)[1]
-        bet.name = props.claimedBet.get(bet.topicid)[0]
-      })
-      setUserBets(bets);
-    };
-    init();
-  }, []);
+  
+  let userBets = props.userBetsData;
 
   console.log("USER BETS:", userBets);
 

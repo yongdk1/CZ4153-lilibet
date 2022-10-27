@@ -114,6 +114,10 @@ input {
   box-shadow: 2px 2px 2px gray;
 }
 
+.gap-below{
+  margin-bottom: 16px;
+}
+
 .abr-item {
   margin-top: 16px;
   margin-bottom: 16px;
@@ -155,6 +159,10 @@ p {
 }
 .pool-amt-text{
   text-transform: capitalize;
+  font-weight: 500;
+}
+
+.bold{
   font-weight: 500;
 }
 
