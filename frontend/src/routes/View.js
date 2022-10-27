@@ -179,10 +179,10 @@ function ViewList(props) {
   let userBets = props.userBetsData;
 
   function claimable(topic) {
-    let flag = 2;
+    var flag = 2;
     userBets.forEach((bet, i) => {
       if (bet.topicid === topic.id) {
-        if (bet.side === topic.result) return 1;
+        if (bet.side === topic.result) flag = 1;
         else flag = 0;
       }
     });
