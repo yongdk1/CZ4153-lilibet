@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Add from "./routes/Add.js";
 import ViewList from "./routes/View.js";
 import Arbitrator from "./routes/Arbitrator.js";
@@ -194,8 +194,14 @@ function App() {
         <Route
           exact
           path="/"
+          render = {()=>{return (<Navigate to="/View"/>)}}
           element={
-            <ViewList topicList={topicsList} placeBet={handlePlaceBet} />
+            <ViewList
+              topicList={topicsList}
+              placeBet={handlePlaceBet}
+              claimBet={handleClaimBet}
+              userBetsData = {userBets}
+            />
           }
         />
         <Route

@@ -179,25 +179,24 @@ function ViewList(props) {
   let userBets = props.userBetsData;
 
   function claimable(topic) {
-
-    let flag = 2
+    let flag = 2;
     userBets.forEach((bet, i) => {
-      if (bet.topicid === topic.id){
-         if (bet.side === topic.result) return 1 
-         else flag = 0
-      } 
+      if (bet.topicid === topic.id) {
+        if (bet.side === topic.result) return 1;
+        else flag = 0;
+      }
     });
     return flag;
   }
 
-  function renderSwitch(topic){
-    switch(claimable(topic)){
+  function renderSwitch(topic) {
+    switch (claimable(topic)) {
       case 1:
-        return <ClaimBetComponent topic={topic} claimBet={props.claimBet} />
+        return <ClaimBetComponent topic={topic} claimBet={props.claimBet} />;
       case 2:
-        return <div>No Bets placed!</div>
-      case 0: 
-        return <div>Unfortunately you did not place a winning bet :(</div>
+        return <div>No Bets placed!</div>;
+      case 0:
+        return <div>Unfortunately you did not place a winning bet :(</div>;
     }
   }
 
