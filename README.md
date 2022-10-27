@@ -39,7 +39,8 @@ Minimum bet value is 100 Wei or as specified by Topic Owner, whichever is higher
 2. Bet value is message value - fixed comission of 100 Wei
 
 ### Reporting Results
-Only the specified arbitrator identity (the trusted judge after the event occurs) can report the results
+1. Only the specified arbitrator identity (the trusted judge after the event occurs) can report the results
+2. Specified arbitrator can only view after betting closes and before the arbitrator resolution deadline
 
 ### Claiming Bets
 1. Winners will claim winnings - corressponding commission to topic owner
