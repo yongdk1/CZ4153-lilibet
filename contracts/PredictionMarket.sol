@@ -5,6 +5,7 @@ pragma experimental ABIEncoderV2;
 contract PredictionMarket{
 
     // CONTRACT DATA
+    // Key Addresses associated with the contract
     address payable contractCreator;
     address public oracle;
 
@@ -17,12 +18,10 @@ contract PredictionMarket{
         return oracle;
     }
 
-    // Prediction Market Contract Creator reward: fixed commission transferred to the contract's creator for every placed bet
+    // PM Contract Creator reward: fixed commission transferred to the contract's creator for every placed bet
     uint256 constant fixedCommission = 100;
     // Minimum entry for all bets, topic owners cannot set it lower than this 
     uint256 constant minimumBet = fixedCommission + 1;
-    // query price for oracle to submit bet results
-    uint256 public oraclePrice;
 
     // TOPIC DATA
     // Information about a topic in a struct
@@ -44,14 +43,14 @@ contract PredictionMarket{
     }
 
     // Array of all topics
-    // topics[] public topicList;
+    // {}topics public topicList;
     mapping(string => topics) topicList;
-    // []string[] public topicSides
+    // {}string[] public topicSides
     mapping(string => string[]) topicSides;
 
     // Keep track of all topic IDs
     string[] public allTopics;
-    // Keep track of all createdTopics to prevent duplicates
+    // Keep track of all created topic ids to prevent duplicates, and to validate if a topic exists
     mapping(string => bool) public createdTopics;
     // Keep track of arbitrator address
     mapping(string => address) public topicArbitrator;
@@ -94,9 +93,9 @@ contract PredictionMarket{
         uint256 amt;
     }
 
-    // bets by user
+    // For each user, track what bets they have placed
     mapping(address => oneBet[]) allBets;
-    // bets by topic
+    // For each topic, track what bets have been placed on it
     mapping(string => oneBet[]) allBetsByTopic;
 
     // For each topic, track how much each user has put into each side
@@ -107,12 +106,7 @@ contract PredictionMarket{
 
 
     // STATE FUNCTIONS
-    // Event if there is not enough to pay for oracle: the user should be informed and their funds returned
-    // event LackingFunds(address indexed sender, uint256 funds);
-
-    /* Contains all the information that can prove useful to people taking a look at the bet in the frontend. */
-    event CreatedBet(string indexed _id, string description, string query);
-
+    // Any user of the contract can create a topic by supplying the necessary parameters and paying gas
     function createTopic(string memory topicID, string memory topic, string[] memory sides, uint64 deadline, uint256 minimum, uint256 commission, string memory description, address _arbitrator, string memory arb) public {
         require(
             bytes(topicID).length > 0
@@ -135,38 +129,34 @@ contract PredictionMarket{
         topicCommissions[topicID] = 100/commission;
         topicArbitrator[topicID]= _arbitrator;
         topicSides[topicID] = sides;
-
         topicList[topicID] = (topics(topicID, topic, sides, deadline, minimum, commission, description, _arbitrator, arb, msg.sender, false, "", 0, false));
 
         // initialize the sides, set pool for each side to 0
         for (uint i = 0; i < sides.length; i++) {
             resultPools[topicID][sides[i]] = 0;
         }
-
-        emit CreatedBet(topicID, description, topic);
+        
+        return;
     }
-
-    // The table in the frontend representing each topic's pool is populated according to these events.
-    event PlacedBet(address indexed user, string indexed _id, string id, string side);
     
-    // only allow user to bet on 1 topic and 1 side each time
+    // User to bet on 1 topic and 1 side each time
     function placeBet(string memory topicID, string memory side) public payable {
         require(
             createdTopics[topicID]
             && !finishedTopics[topicID], 
+            // comment out deadline validation so that we can bet on expired sample topics
             // && topicDeadlines[topicID] >= block.timestamp,
         "Unable to place bets, check arguments.");
 
-        uint256 bet = msg.value;
-
         require(
-        bytes(side).length > 0,
+            bytes(side).length > 0,
         "Attempted to place invalid bet, check result");
 
         require(
-        msg.value >= topicMinimum[topicID],
+            msg.value >= topicMinimum[topicID],
         "Attempted to place invalid bet, check amount");
 
+        uint256 bet = msg.value;
         bet -= fixedCommission;
 
         // Update all required state
@@ -174,7 +164,6 @@ contract PredictionMarket{
         userPools[topicID][msg.sender] += bet;
         topicPools[topicID] += bet;
         userBets[topicID][msg.sender][side] += bet;
-
         allBets[msg.sender].push(oneBet(topicID, msg.sender, side, bet));
         allBetsByTopic[topicID].push(oneBet(topicID, msg.sender, side, bet));
 
@@ -182,38 +171,25 @@ contract PredictionMarket{
         (bool success, ) = contractCreator.call{value: fixedCommission}("");
         require(success, "Failed to transfer fixed commission to contract creator.");
 
-        emit PlacedBet(msg.sender, topicID, topicID, side);
+        return;
     }
 
-    // Emit result
-    event ReportedResult(string indexed _id, string result);
-
-    // Function executed by oracle when the topic is scheduled to close
+    // Function executed by arbitrator when after topic deadline has passed
     function reportResult(string memory topicID, string memory result) public {
         require(msg.sender == topicArbitrator[topicID] && !finishedTopics[topicID], 'only oracle can report the result');
         
         topicResults[topicID] = result;
         finishedTopics[topicID] = true;
         
-        topicList[topicID].finished = true;
         topicList[topicID].result = result;
-
-        emit ReportedResult(topicID, result);
+        topicList[topicID].finished = true;
+        
+        return;
     }
-    
-    // If the user wins the bet, let them know along with the reward amount.
-    event WonBet(address indexed winner, uint256 won);
-    
-    // If the user lost no funds are claimable.
-    event LostBet(address indexed loser);
-    
-    /* If no one wins the bet the funds can be refunded to the user, 
-    after the bet creator's takes their cut. */
-    event UnwonBet(address indexed refunded);
     
     function claimBet(string memory topicID) public {
         bool topicExpired = topicSchedules[topicID] + topicThreshold > block.timestamp;
-        
+        // Check if bet has been completed and result has been reported
         // If the bet has not finished but its threshold has been reached, let the user get back their funds
         require(
             (finishedTopics[topicID] || topicExpired) 
@@ -221,41 +197,43 @@ contract PredictionMarket{
             && userPools[topicID][msg.sender] != 0,
         "Invalid bet state while claiming reward.");
         
+        // Update state
         claimedBets[topicID][msg.sender] = true;
         
+        // Check results and pools
         string memory result = topicResults[topicID];
         uint256 userBet = userBets[topicID][msg.sender][result];
         uint256 winnerPool = resultPools[topicID][result];
-        uint256 reward;
         
+        uint256 reward;
         if (winnerPool == 0) {
             // If no one won then all bets are refunded
             reward = userPools[topicID][msg.sender];
-            emit UnwonBet(msg.sender);
         } else if (userBet != 0) {
             // User gets their corresponding fraction of the loser's pool, along with their original bet
             uint256 loserPool = topicPools[topicID] - winnerPool;
             reward = userBet + loserPool * userBet / winnerPool;
-            emit WonBet(msg.sender, reward);
         } else {
             // User lost
-            emit LostBet(msg.sender);
             return;
         }
         
         // Bet owner gets their commission
         uint256 ownerFee = reward / topicCommissions[topicID];
         reward -= ownerFee;
-        (bool success, ) = msg.sender.call{value:reward}("");
-        require(success, "Failed to transfer reward to user.");
-        (success, ) = topicOwners[topicID].call{value:ownerFee}("");
+        (bool success, ) = topicOwners[topicID].call{value:ownerFee}("");
         require(success, "Failed to transfer commission to bet owner.");
+        // Bet placer gets their winnings
+        (success, ) = msg.sender.call{value:reward}("");
+        require(success, "Failed to transfer reward to user.");
+        
+        return;
     }
 
 
 
     // VIEW functions
-    // return all topics
+    // Return all topics
     function getTopics() public view returns (topics[] memory){
         topics[] memory id = new topics[](allTopics.length);
         for (uint i = 0; i < allTopics.length; i++) {
@@ -267,18 +245,17 @@ contract PredictionMarket{
         return id;
     }
 
-    // return one topic 
+    // Return one topic 
     function getTopic(string memory id) public view returns (topics memory){
         return topicList[id];
     }
 
-    // return all bets a user has made
-    // should address be param or message sender?
+    // Return all bets a user has made
     function getUserBets(address _user) public view returns (oneBet[] memory){
         return allBets[_user];
     }
 
-    // return bets by topic
+    // Return bets by topic
     function getBetsByTopic(string memory topicID) public view returns (oneBet[] memory){
         return allBetsByTopic[topicID];
     }
@@ -292,7 +269,7 @@ contract PredictionMarket{
         indivPool[] pools;
     }
 
-    // get pool for a topic
+    // Return pool for a topic
     function getTopicPool() public view returns (pool[] memory){
         pool[] memory pools = new pool[](allTopics.length);
         
@@ -310,13 +287,4 @@ contract PredictionMarket{
 
         return pools;
     }
-
-    /*
-    // function to check if user has claimed the bet for a topic already
-
-    // function to check if user is owner of a topic
-    function isOwner(address person) public view returns (bool result){
-        topicOwners
-    }
-    */
 }
