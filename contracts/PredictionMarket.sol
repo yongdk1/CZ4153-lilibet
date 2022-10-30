@@ -187,6 +187,9 @@ contract PredictionMarket{
         return;
     }
     
+    // Function executed by any user to claim winnings of a specific topic
+    // Users who have not won anything are not advised to execute this function
+    // as they will only pay gas without having any value added to their wallet
     function claimBet(string memory topicID) public {
         bool topicExpired = topicSchedules[topicID] + topicThreshold > block.timestamp;
         // Check if bet has been completed and result has been reported
