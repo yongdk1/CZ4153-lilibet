@@ -19,7 +19,7 @@ To compile contracts, run `truffle compile`
 To deploy, run
 `truffle develop` > `migrate --reset` > `deploy`
 
-To launch webside, in another shell run the commands `cd frontend`, `npm install`, `npm start`
+To launch website, in another shell run the commands `cd frontend`, `npm install`, `npm start`
 
 ## Key Functionalities
 
